@@ -16,7 +16,7 @@ export default class Plant {
 
   private timeToNextSwitch: number;
 
-  private color: number;
+  private color: number|string;
 
   private asc: boolean;
 
@@ -26,7 +26,7 @@ export default class Plant {
     this.plotRadius = plotRadius;
     this.observations = observations;
 
-    this.color = this.getGreenShade(0);
+    this.color = this.getGreenHue(0);
     this.radius = 0;
     this.index = 0;
     this.asc = false;
@@ -35,9 +35,30 @@ export default class Plant {
 
     if (this.index < this.observations.length && this.observations[this.index]) {
       this.calculateRadius(this.observations[this.index]!.getCoverage());
-      this.color = this.getGreenShade(this.observations[this.index]!.getHeight());
+      this.color = this.getGreenHue(this.observations[this.index]!.getHeight());
       this.asc = true;
     }
+  }
+
+  private getGreenHue(value: number): string {
+    // Ensure the value stays within the 0 to 1 range.
+    value = Math.max(0, Math.min(1, value));
+    
+    // Define lightness: 90% for 0 (lighter green) and 30% for 1 (darker green).
+    const lightness = 90 - 60 * value;
+    
+    // Return an HSL color. Green hue is 120 degrees.
+    return `hsl(120, 100%, ${lightness}%)`;
+  }
+
+  private getGreenYellowHue(value: number): string {
+    // Clamp the value between 0 and 1.
+    value = Math.max(0, Math.min(1, value));
+    
+    const hue = 60 + 60 * value * 0.8;
+    
+    // Use fixed saturation and lightness for a vivid color.
+    return `hsl(${hue}, 100%, 50%)`;
   }
 
   private getGreenShade(height: number): number {
@@ -66,9 +87,9 @@ export default class Plant {
         this.calculateRadius(this.observations[this.index]!.getCoverage());
         if(this.index > 0 && this.observations[this.index - 1] && this.observations[this.index]) {
           if(this.observations[this.index - 1]!.getCoverage() < this.observations[this.index]!.getCoverage()) {
-            this.color = this.getGreenShade(this.observations[this.index]!.getHeight());
+            this.color = this.getGreenHue(this.observations[this.index]!.getHeight());
           } else {
-            this.color = this.getYellowShade(this.observations[this.index]!.getHeight());
+            this.color = this.getGreenYellowHue(this.observations[this.index]!.getHeight());
           }
         }
         console.log(this.color);
@@ -84,6 +105,12 @@ export default class Plant {
 
 
   public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawIrregularPlantishShape(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
+    //CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
+    if (Number(this.color))
+    {
+      CanvasRenderer.drawIrregularPlantishShape(canvas, this.centerX, this.centerY, this.radius, Number(this.color), this.asc);
+    } else if (this.color) {
+      CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color.toString(), this.color.toString());
+    }
   }
 }

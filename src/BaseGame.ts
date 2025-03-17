@@ -28,7 +28,7 @@ export default class BaseGame extends Game {
     this.mouseListener = new MouseListener(canvas);
     this.fields = [];
 
-    this.reader = new DataReader('../data/sample.csv');
+    this.reader = new DataReader('../data/rilland_2022.csv');
     this.reader.load()
       .then((data: Field[]) => {
         this.fields = data;

@@ -5,6 +5,8 @@ import Plot from './Plot.js';
 export default class Field {
   private posX: number;
   private posY: number;
+  private column: number;
+  private row: number;
   private width: number;
   private height: number;
   private plantMaxRadius: number;
@@ -12,10 +14,12 @@ export default class Field {
   private name: string;
 
   public constructor(name: string, posX: number, posY:number, plantMaxRadius: number, observations: Observation[]) {
-    this.posX = posX;
-    this.posY = posY;
+    this.column = observations[0]?.getColumn() ?? 0;
+    this.row = observations[0]?.getRow() ?? 0;
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
     this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
+    this.posX = this.column * (this.width + 50);
+    this.posY = this.row * (this.height + 50) + 20;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
@@ -48,5 +52,13 @@ export default class Field {
     CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404');
     this.plots.forEach((plot: Plot) => plot.render(canvas));
     CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX , this.height + this.posY + 20, 'center');
+  }
+
+  public getColumn(): number {
+    return this.column;
+  }
+
+  public getRow(): number {
+    return this.row;
   }
 }

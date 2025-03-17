@@ -44,7 +44,9 @@ export default class DataReader {
       const observation = new Observation(
         row[5]!,
         Number.parseFloat(row[7]!),
-        Number.parseFloat(row[8]!)
+        Number.parseFloat(row[8]!),
+        Number.parseFloat(row[19]!),
+        Number.parseFloat(row[18]!),
       );
   
       if (fieldNumber && !fieldObservationsMap.has(fieldNumber)) {
