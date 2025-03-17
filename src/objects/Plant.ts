@@ -16,7 +16,9 @@ export default class Plant {
 
   private timeToNextSwitch: number;
 
-  private color: string;
+  private color: number;
+
+  private asc: boolean;
 
   public constructor(centerX: number, centerY: number, plotRadius: number, observations: Observation[]) {
     this.centerX = centerX;
@@ -27,25 +29,27 @@ export default class Plant {
     this.color = this.getGreenShade(0);
     this.radius = 0;
     this.index = 0;
+    this.asc = false;
 
     this.timeToNextSwitch = 2000;
 
     if (this.index < this.observations.length && this.observations[this.index]) {
       this.calculateRadius(this.observations[this.index]!.getCoverage());
       this.color = this.getGreenShade(this.observations[this.index]!.getHeight());
+      this.asc = true;
     }
   }
 
-  private getGreenShade(height: number): string {
+  private getGreenShade(height: number): number {
+    this.asc = true;
     height = Math.max(0, Math.min(1, height));
-    const lightness: number = 90 - 60 * height;
-    return `hsl(120, 100%, ${lightness}%)`;
+    return 90 - 60 * height;
   }
 
-  private getYellowShade(height: number): string {
+  private getYellowShade(height: number): number {
+    this.asc = false;
     height = Math.max(0, Math.min(1, height));
-    const hue: number = 60 + 60 * (height * 0.8);
-    return `hsl(${hue}, 100%, 50%)`;
+    return 60 + 60 * (height * 0.8);
   }
 
   private calculateRadius(observationPercentage: number): void {
@@ -80,6 +84,6 @@ export default class Plant {
 
 
   public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color, this.color);
+    CanvasRenderer.drawIrregularPlantishShape(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
   }
 }

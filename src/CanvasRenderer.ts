@@ -131,6 +131,63 @@ export default class CanvasRenderer {
     ctx.stroke();
   }
 
+  public static drawIrregularPlantishShape(
+    canvas: HTMLCanvasElement,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    hue: number, // e.g., 120 for a greenish tone,
+    asc: boolean
+  ): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+    
+    const numPoints = 30;                // More points yield a smoother but irregular shape
+    const variation = 0.15 * radius;       // Adjust the variation factor for more/less irregularity
+    
+    for (let i = 0; i < numPoints; i++) {
+      const angle = (i / numPoints) * 2 * Math.PI;
+      // Randomize the radius for each point around the circle
+      const randomRadius = radius + (Math.random() - 0.5) * variation * 2;
+      const x = centerX + randomRadius * Math.cos(angle);
+      const y = centerY + randomRadius * Math.sin(angle);
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+    
+    ctx.closePath();
+    
+    // Create a radial gradient using HSL colors based on the given hue.
+    // Here, the saturation is fixed at 70%, while lightness varies to create depth.
+    const gradient = ctx.createRadialGradient(
+      centerX, centerY, radius * 0.1,
+      centerX, centerY, radius
+    );
+    
+    // Inner color is lighter, mid is base, outer is darker.
+
+    if (asc) {
+      gradient.addColorStop(0, `hsl(120, 70%, ${hue}%)`);
+      gradient.addColorStop(0.5, `hsl(120, 70%, ${hue}%)`);
+      gradient.addColorStop(1, `hsl(120, 70%, ${hue}%)`);
+    } else {
+      gradient.addColorStop(0, `hsl(${hue}, 70%, 50%)`);
+      gradient.addColorStop(0.5, `hsl(${hue}, 70%, 50%)`);
+      gradient.addColorStop(1, `hsl(${hue}, 70%, 50%)`);
+    }
+    
+    ctx.fillStyle = gradient;
+    // Use a slightly darker outline to maintain consistency.
+    ctx.strokeStyle = `hsl(${hue}, 70%, 35%)`;
+    ctx.fill();
+    ctx.stroke();
+  }
+  
+  
+
   /**
    * Draw a rectangle outline to the canvas
    *
