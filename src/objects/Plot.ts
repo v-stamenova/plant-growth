@@ -1,4 +1,5 @@
 import CanvasRenderer from '../CanvasRenderer.js';
+import Observation from './Observation.js';
 import Plant from './Plant.js';
 
 export default class Plot {
@@ -10,11 +11,11 @@ export default class Plot {
 
   private plant: Plant;
 
-  public constructor(centerX: number, centerY: number, radius: number){
+  public constructor(centerX: number, centerY: number, radius: number, observations: Observation[]){
     this.centerX = centerX;
     this.centerY = centerY;
     this.radius = radius;
-    this.plant = new Plant(this.centerX, this.centerY, this.radius);
+    this.plant = new Plant(this.centerX, this.centerY, this.radius, observations);
   }
 
   public update(elapsed: number): boolean {

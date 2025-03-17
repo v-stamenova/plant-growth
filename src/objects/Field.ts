@@ -1,4 +1,5 @@
 import CanvasRenderer from '../CanvasRenderer.js';
+import Observation from './Observation.js';
 import Plot from './Plot.js';
 
 export default class Field {
@@ -10,7 +11,7 @@ export default class Field {
   private plots: Plot[];
   private name: string;
 
-  public constructor(name: string, posX: number, posY:number, plantMaxRadius: number) {
+  public constructor(name: string, posX: number, posY:number, plantMaxRadius: number, observations: Observation[]) {
     this.posX = posX;
     this.posY = posY;
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
@@ -18,15 +19,15 @@ export default class Field {
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
-    this.fillPlots();
+    this.fillPlots(observations);
   }
 
-  public fillPlots() {
+  public fillPlots(observations: Observation[]) {
     let index: number = 0;
     let centerX: number = this.posX + this.plantMaxRadius * 1.3;
     let centerY: number = this.posY + this.plantMaxRadius * 1.2;
     while (index < 8) {
-      this.plots.push(new Plot(centerX, centerY, this.plantMaxRadius));
+      this.plots.push(new Plot(centerX, centerY, this.plantMaxRadius, observations));
       centerX += this.plantMaxRadius * 2.1;
 
       if(index == 3){

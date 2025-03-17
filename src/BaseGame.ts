@@ -5,6 +5,8 @@ import KeyListener from './KeyListener.js';
 import MouseListener from './MouseListener.js';
 import Plot from './objects/Plot.js';
 import Field from './objects/Field.js';
+import DataReader from './helpers/DataReader.js';
+import Observation from './objects/Observation.js';
 
 export default class BaseGame extends Game {
   private canvas: HTMLCanvasElement;
@@ -13,7 +15,11 @@ export default class BaseGame extends Game {
 
   private mouseListener: MouseListener;
 
-  private field: Field;
+  private field?: Field;
+
+  private reader: DataReader;
+
+  private totalObservations: Observation[];
 
   public constructor(canvas: HTMLCanvasElement) {
     super();
@@ -22,7 +28,19 @@ export default class BaseGame extends Game {
     this.canvas.width = window.innerWidth;
     this.keyListener = new KeyListener();
     this.mouseListener = new MouseListener(canvas);
-    this.field = new Field('R 12-231', 100, 100, 30);
+    this.totalObservations = [];
+
+    this.reader = new DataReader('../data/sample.csv');
+    this.reader.load()
+      .then((data: Observation[]) => {
+        this.totalObservations = data;
+        this.field = new Field('R 12-231', 100, 100, 30, this.totalObservations);
+        console.log('CSV Data:', data);
+      })
+      .catch((err: Error) => {
+        console.error('Error loading CSV:', err);
+      });
+
   }
 
   /**
@@ -39,13 +57,13 @@ export default class BaseGame extends Game {
    * @returns true if the game should continue
    */
   public update(elapsed: number): boolean {
-    return this.field.update(elapsed);
+    return this.field?.update(elapsed) ?? true;
   }
 
   /**
    * Render all the elements in the screen.
    */
   public render(): void {
-    this.field.render(this.canvas);
+    this.field?.render(this.canvas);
   }
 }

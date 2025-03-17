@@ -18,10 +18,11 @@ export default class Plant {
 
   private color: string;
 
-  public constructor(centerX: number, centerY: number, plotRadius: number) {
+  public constructor(centerX: number, centerY: number, plotRadius: number, observations: Observation[]) {
     this.centerX = centerX;
     this.centerY = centerY;
     this.plotRadius = plotRadius;
+    this.observations = observations;
 
     this.color = this.getGreenShade(0);
     this.radius = 0;
@@ -29,7 +30,6 @@ export default class Plant {
 
     this.timeToNextSwitch = 2000;
 
-    this.observations = [new Observation('17.03.2025', 30, 0.2), new Observation('18.03.2025', 50, 0.4), new Observation('19.03.2025', 80, 0.9), new Observation('21.03.2025', 60, 0.6)];
     if (this.index < this.observations.length && this.observations[this.index]) {
       this.calculateRadius(this.observations[this.index]!.getCoverage());
       this.color = this.getGreenShade(this.observations[this.index]!.getHeight());
