@@ -19,6 +19,8 @@ export default class BaseGame extends Game {
 
   private fields: Field[];
 
+  private currentDate: string;
+
   public constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
@@ -27,11 +29,13 @@ export default class BaseGame extends Game {
     this.keyListener = new KeyListener();
     this.mouseListener = new MouseListener(canvas);
     this.fields = [];
+    this.currentDate = '';
 
     this.reader = new DataReader('../data/rilland_2022.csv');
     this.reader.load()
       .then((data: Field[]) => {
         this.fields = data;
+        this.currentDate = this.fields[0]?.getDate() ?? '';
         console.log('CSV Data:', data);
       })
       .catch((err: Error) => {
@@ -55,6 +59,8 @@ export default class BaseGame extends Game {
    */
   public update(elapsed: number): boolean {
     this.fields.forEach((field: Field) => field.update(elapsed));
+    this.currentDate = this.fields[0]?.getDate() ?? '';
+
     return true;
   }
 
@@ -62,6 +68,8 @@ export default class BaseGame extends Game {
    * Render all the elements in the screen.
    */
   public render(): void {
+    CanvasRenderer.clearCanvas(this.canvas);
     this.fields.forEach((field: Field) => field.render(this.canvas));
+    CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');
   }
 }

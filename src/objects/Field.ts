@@ -19,7 +19,7 @@ export default class Field {
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
     this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
     this.posX = this.column * (this.width + 50);
-    this.posY = this.row * (this.height + 50) + 20;
+    this.posY = this.row * (this.height + 50) + 100;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
@@ -60,5 +60,9 @@ export default class Field {
 
   public getRow(): number {
     return this.row;
+  }
+
+  public getDate(): string {
+    return this.plots[0]?.getDate() ?? '';
   }
 }

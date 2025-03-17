@@ -13,6 +13,10 @@ export default class Observation {
         this.height = height;
     }
 
+    public getDate(): string {
+        return this.date;
+    }
+
     public getCoverage(): number {
         return this.coverage;
     }

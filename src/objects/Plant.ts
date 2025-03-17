@@ -113,4 +113,8 @@ export default class Plant {
       CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color.toString(), this.color.toString());
     }
   }
+
+  public getDate(): string {
+    return this.observations[this.index]?.getDate() ?? '';
+  }
 }

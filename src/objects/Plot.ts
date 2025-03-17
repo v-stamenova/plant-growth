@@ -27,4 +27,8 @@ export default class Plot {
     CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, '#421010', '#421010');
     this.plant.render(canvas);
   }
+
+  public getDate(): string {
+    return this.plant.getDate();
+  }
 }
