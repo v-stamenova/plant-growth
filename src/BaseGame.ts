@@ -3,6 +3,8 @@ import Game from './Game.js';
 import CanvasRenderer from './CanvasRenderer.js';
 import KeyListener from './KeyListener.js';
 import MouseListener from './MouseListener.js';
+import Plot from './objects/Plot.js';
+import Field from './objects/Field.js';
 
 export default class BaseGame extends Game {
   private canvas: HTMLCanvasElement;
@@ -11,6 +13,8 @@ export default class BaseGame extends Game {
 
   private mouseListener: MouseListener;
 
+  private field: Field;
+
   public constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
@@ -18,6 +22,7 @@ export default class BaseGame extends Game {
     this.canvas.width = window.innerWidth;
     this.keyListener = new KeyListener();
     this.mouseListener = new MouseListener(canvas);
+    this.field = new Field('R 12-231', 100, 100, 30);
   }
 
   /**
@@ -34,13 +39,13 @@ export default class BaseGame extends Game {
    * @returns true if the game should continue
    */
   public update(elapsed: number): boolean {
-    return false;
+    return this.field.update(elapsed);
   }
 
   /**
    * Render all the elements in the screen.
    */
   public render(): void {
-
+    this.field.render(this.canvas);
   }
 }

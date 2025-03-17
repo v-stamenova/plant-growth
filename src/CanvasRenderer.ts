@@ -108,6 +108,7 @@ export default class CanvasRenderer {
    * @param centerY the y-coordinate of the center of the circle
    * @param radius the radius of the circle
    * @param color the color of the circle outline
+   * @param fillColor the color the fill
    */
   public static drawCircle(
     canvas: HTMLCanvasElement,
@@ -115,11 +116,18 @@ export default class CanvasRenderer {
     centerY: number,
     radius: number,
     color: string = 'red',
+    fillColor?: string
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+
+    if (fillColor) {
+      ctx.fillStyle = fillColor;
+      ctx.fill();
+    }
+
     ctx.stroke();
   }
 
@@ -132,6 +140,7 @@ export default class CanvasRenderer {
    * @param width the width of the rectangle from x to the right
    * @param height the height of the rectrangle from y downwards
    * @param color the color of the rectangle outline
+   * @param fillColor the color the fill
    */
   public static drawRectangle(
     canvas: HTMLCanvasElement,
@@ -140,11 +149,18 @@ export default class CanvasRenderer {
     width: number,
     height: number,
     color: string = 'red',
+    fillColor?: string,
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.rect(dx, dy, width, height);
+    
+    if (fillColor) {
+      ctx.fillStyle = fillColor;
+      ctx.fill();
+    }
+
     ctx.stroke();
   }
 
