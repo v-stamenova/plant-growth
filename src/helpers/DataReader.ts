@@ -58,7 +58,7 @@ export default class DataReader {
 
     const fields: Field[] = [];
     for (const [fieldNumber, observations] of fieldObservationsMap.entries()) {
-      const field = new Field(fieldNumber, 100, 100, 30, observations);
+      const field = new Field(fieldNumber, 100, 100, 20, observations);
       fields.push(field);
     }
     return fields;
