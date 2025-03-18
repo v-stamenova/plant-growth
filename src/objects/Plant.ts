@@ -1,5 +1,7 @@
+import Konva from 'konva';
 import CanvasRenderer from '../CanvasRenderer.js';
 import Observation from './Observation.js';
+import KonvaRenderer from '../helpers/KonvaRenderer.js';
 
 export default class Plant {
   private centerX: number;
@@ -104,13 +106,13 @@ export default class Plant {
   }
 
 
-  public render(canvas: HTMLCanvasElement): void {
+  public render(stage: Konva.Stage): void {
     //CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
     if (Number(this.color))
     {
-      CanvasRenderer.drawIrregularPlantishShape(canvas, this.centerX, this.centerY, this.radius, Number(this.color), this.asc);
+      //CanvasRenderer.drawIrregularPlantishShape(canvas, this.centerX, this.centerY, this.radius, Number(this.color), this.asc);
     } else if (this.color) {
-      CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color.toString(), this.color.toString());
+      KonvaRenderer.drawCircle(stage, this.centerX, this.centerY, this.radius, this.color.toString(), this.color.toString());
     }
   }
 

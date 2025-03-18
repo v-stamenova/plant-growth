@@ -1,4 +1,6 @@
+import Konva from 'konva';
 import CanvasRenderer from '../CanvasRenderer.js';
+import KonvaRenderer from '../helpers/KonvaRenderer.js';
 import Observation from './Observation.js';
 import Plot from './Plot.js';
 
@@ -48,10 +50,11 @@ export default class Field {
     return true;
   }
 
-  public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404');
-    this.plots.forEach((plot: Plot) => plot.render(canvas));
-    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX , this.height + this.posY + 20, 'center');
+  public render(stage: Konva.Stage): void {
+    console.log(this.posX + ' ' + this.posY);
+    KonvaRenderer.drawRectangle(stage, this.posX, this.posY, this.width, this.height, '#240404', '#240404');
+    this.plots.forEach((plot: Plot) => plot.render(stage));
+    KonvaRenderer.writeText(stage, this.name, (this.width / 2) + this.posX , this.height + this.posY + 20, 'center');
   }
 
   public getColumn(): number {

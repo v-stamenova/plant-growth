@@ -1,6 +1,8 @@
+import Konva from 'konva';
 import CanvasRenderer from '../CanvasRenderer.js';
 import Observation from './Observation.js';
 import Plant from './Plant.js';
+import KonvaRenderer from '../helpers/KonvaRenderer.js';
 
 export default class Plot {
   private centerX: number;
@@ -23,9 +25,9 @@ export default class Plot {
   }
 
 
-  public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, '#421010', '#421010');
-    this.plant.render(canvas);
+  public render(stage: Konva.Stage): void {
+    KonvaRenderer.drawCircle(stage, this.centerX, this.centerY, this.radius, '#421010', '#421010');
+    this.plant.render(stage);
   }
 
   public getDate(): string {

@@ -7,13 +7,11 @@ import Plot from './objects/Plot.js';
 import Field from './objects/Field.js';
 import DataReader from './helpers/DataReader.js';
 import Observation from './objects/Observation.js';
+import Konva from 'konva';
+import KonvaRenderer from './helpers/KonvaRenderer.js';
 
 export default class BaseGame extends Game {
-  private canvas: HTMLCanvasElement;
-
-  private keyListener: KeyListener;
-
-  private mouseListener: MouseListener;
+  private stage: Konva.Stage;
 
   private reader: DataReader;
 
@@ -21,13 +19,9 @@ export default class BaseGame extends Game {
 
   private currentDate: string;
 
-  public constructor(canvas: HTMLCanvasElement) {
+  public constructor(stage: Konva.Stage) {
     super();
-    this.canvas = canvas;
-    this.canvas.height = window.innerHeight;
-    this.canvas.width = window.innerWidth;
-    this.keyListener = new KeyListener();
-    this.mouseListener = new MouseListener(canvas);
+    this.stage = stage;
     this.fields = [];
     this.currentDate = '';
 
@@ -68,8 +62,8 @@ export default class BaseGame extends Game {
    * Render all the elements in the screen.
    */
   public render(): void {
-    CanvasRenderer.clearCanvas(this.canvas);
-    this.fields.forEach((field: Field) => field.render(this.canvas));
-    CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');
+    KonvaRenderer.clearCanvas(this.stage);
+    this.fields.forEach((field: Field) => field.render(this.stage));
+    KonvaRenderer.writeText(this.stage, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');
   }
 }
