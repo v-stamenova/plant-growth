@@ -18,15 +18,15 @@ export default class Field {
     this.row = observations[0]?.getRow() ?? 0;
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
     this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
-    this.posX = this.column * (this.width + 50);
-    this.posY = this.row * (this.height + 50) + 100;
+    this.posX = this.column * (this.width + 50) + 50;
+    this.posY = this.row * (this.height + 50) + 50;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
     this.fillPlots(observations);
   }
 
-  public fillPlots(observations: Observation[]) {
+  public fillPlots(observations: Observation[]): void {
     let index: number = 0;
     let centerX: number = this.posX + this.plantMaxRadius * 1.3;
     let centerY: number = this.posY + this.plantMaxRadius * 1.2;
@@ -41,6 +41,20 @@ export default class Field {
 
       index += 1;
     }
+  }
+
+  /**
+  * Moves the plant by the specified horizontal and vertical distances.
+  *
+  * @param deltaX is the horizontal distance the plant should move
+  * @param deltaY is the vertical distance the plant should move
+  */
+  public move(deltaX: number, deltaY: number): void {
+    this.posX += deltaX;
+    this.posY += deltaY;
+    this.plots.forEach((plot: Plot) => {
+      plot.move(deltaX, deltaY);
+    });
   }
 
   public update(elapsed: number): boolean {
@@ -64,5 +78,13 @@ export default class Field {
 
   public getDate(): string {
     return this.plots[0]?.getDate() ?? '';
+  }
+
+  public getPosition(): number[] {
+    return [this.posX, this.posY];
+  }
+
+  public getDimensions(): number[] {
+    return [this.width, this.height];
   }
 }
