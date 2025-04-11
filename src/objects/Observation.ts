@@ -4,13 +4,15 @@ export default class Observation {
     private height: number;
     private column: number;
     private row: number;
+    private ndvi: number;
 
-    public constructor(date: string, coverage: number, height: number, column: number, row: number) {
+    public constructor(date: string, coverage: number, height: number, column: number, row: number, ndvi: number) {
         this.date = date;
         this.column = column;
         this.row = row;
         this.coverage = coverage;
         this.height = height;
+        this.ndvi = ndvi;
     }
 
     public getDate(): string {
@@ -31,5 +33,9 @@ export default class Observation {
 
     public getColumn(): number {
         return this.column;
+    }
+
+    public getNDVI(): number {
+        return this.ndvi;
     }
 } 
