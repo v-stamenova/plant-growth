@@ -62,7 +62,7 @@ export default class BaseGame extends Game {
 
     let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
     const cameraSpeed: number = 15;
-    if (this.keyListener.isKeyDown('ArrowDown')) {
+    if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyW')) {
       ySpeed -= cameraSpeed;
     }
     if (this.keyListener.isKeyDown('ArrowUp')) {
@@ -104,6 +104,23 @@ export default class BaseGame extends Game {
     this.fields.forEach((field: Field) => {
       field.move(xSpeed, ySpeed);
     });
+
+    // input processing for fields
+    // turns off info panel for all fields except the one clicked
+    // if anything else is clicked, it closes the info panel again
+    this.fields.forEach((field: Field) => {
+      if (field.isHover(this.mouseListener)) {
+        if (this.mouseListener.isButtonDown(0) && !field.openInfoPanel) {
+          this.fields.forEach((otherField: Field) => {
+            otherField.openInfoPanel = false;
+          });
+          field.openInfoPanel = true;
+        }
+      }
+    });
+    if (this.mouseListener.buttonPressed(0)) {
+      this.fields.map((field: Field) => field.openInfoPanel = false);
+    }
   }
 
   /**
@@ -124,6 +141,11 @@ export default class BaseGame extends Game {
   public render(): void {
     CanvasRenderer.clearCanvas(this.canvas);
     this.fields.forEach((field: Field) => field.render(this.canvas));
+    this.fields.forEach((field: Field) => {
+      if (field.openInfoPanel) {
+        field.renderInfoPanel(this.canvas);
+      }
+    });
     CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');
     this.dateSlider.render(this.canvas);
     CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.215, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'blue')
