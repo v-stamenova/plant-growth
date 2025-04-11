@@ -8,8 +8,6 @@ export default class Plant {
 
   private plotRadius: number;
 
-  private radius: number;
-
   private observations: Observation[];
 
   private index: number;
@@ -28,7 +26,6 @@ export default class Plant {
     this.plotRadius = plotRadius;
     this.observations = observations;
 
-    this.radius = 0;
     this.index = 0;
 
     this.timeToNextSwitch = 2000;
@@ -41,15 +38,11 @@ export default class Plant {
     if (this.observations[this.index] != null) {
       const imageIndex: number = this.ndviRange(this.observations[this.index]!.getNDVI());
       this.image = this.loadedImages[imageIndex] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png'); 
+      this.width = this.plotRadius * 2.5 * (this.observations[this.index]!.getCoverage() / 100);
     } else {
       this.image = CanvasRenderer.loadNewImage('../../img/plant-green.png');
+      this.width = 50;
     }
-
-    this.width = 50;
-  }
-
-  private calculateRadius(observationPercentage: number): void {
-    this.radius = (observationPercentage / 100) * this.plotRadius;
   }
 
   private updateImage(): void {
@@ -82,7 +75,7 @@ export default class Plant {
       this.timeToNextSwitch = 2000;
 
       if (this.index < this.observations.length && this.observations[this.index]) {
-        this.calculateRadius(this.observations[this.index]!.getCoverage());
+        this.width = this.plotRadius * 3 * (this.observations[this.index]!.getCoverage() / 100);
         this.updateImage();
       }
     }
