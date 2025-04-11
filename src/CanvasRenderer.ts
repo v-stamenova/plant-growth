@@ -84,6 +84,34 @@ export default class CanvasRenderer {
   }
 
   /**
+   * Drawing an image with dimensions and rotation around its center
+   * @param canvas - The canvas element.
+   * @param image - The image element to draw.
+   * @param dx - The x-coordinate of where the image is drawn.
+   * @param dy - The y-coordinate of where the image is drawn.
+   * @param dw - The width of the drawn image.
+   * @param dh - The height of the drawn image.
+   * @param radD - A multiplier for π to determine the rotation in radians.
+   */
+  public static drawImageDimensionsRotation(
+    canvas: HTMLCanvasElement,
+    image: HTMLImageElement,
+    dx: number,
+    dy: number,
+    dw: number,
+    dh: number,
+    radD: number,
+  ): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.save();
+    ctx.translate(dx + dw / 2, dy + dh / 2);
+    ctx.rotate(Math.PI * radD);
+    ctx.drawImage(image, -dw / 2, -dh / 2, dw, dh);
+    ctx.restore();
+  }
+
+
+  /**
    * Clear the canvas, preparing for drawing
    *
    * @param canvas canvas to be cleared

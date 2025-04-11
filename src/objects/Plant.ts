@@ -20,6 +20,8 @@ export default class Plant {
   
   private loadedImages: HTMLImageElement[];
 
+  private rotation: number;
+
   public constructor(centerX: number, centerY: number, plotRadius: number, observations: Observation[]) {
     this.centerX = centerX;
     this.centerY = centerY;
@@ -27,6 +29,7 @@ export default class Plant {
     this.observations = observations;
 
     this.index = 0;
+    this.rotation = Math.random();
 
     this.timeToNextSwitch = 2000;
 
@@ -105,7 +108,7 @@ export default class Plant {
    * @param canvas the selected canvas to render elements on
    */
   public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawImageDimensions(canvas, this.image, this.centerX - this.width * 0.5, this.centerY - this.width * 0.5, this.width, this.width);
+    CanvasRenderer.drawImageDimensionsRotation(canvas, this.image, this.centerX - this.width * 0.5, this.centerY - this.width * 0.5, this.width, this.width, this.rotation);
   }
 
   public getDate(): string {
