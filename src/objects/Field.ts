@@ -12,6 +12,7 @@ export default class Field {
   private plantMaxRadius: number;
   private plots: Plot[];
   private name: string;
+  private dates: string[]
 
   public constructor(name: string, posX: number, posY:number, plantMaxRadius: number, observations: Observation[]) {
     this.column = observations[0]?.getColumn() ?? 0;
@@ -23,6 +24,7 @@ export default class Field {
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
+    this.dates = observations.map((observation: Observation) => observation.getDate());
     this.fillPlots(observations);
   }
 
@@ -43,8 +45,8 @@ export default class Field {
     }
   }
 
-  public update(elapsed: number): boolean {
-    this.plots.forEach((plot: Plot) => plot.update(elapsed));
+  public update(elapsed: number, dateIndex: number): boolean {
+    this.plots.forEach((plot: Plot) => plot.update(elapsed, dateIndex));
     return true;
   }
 
@@ -64,5 +66,9 @@ export default class Field {
 
   public getDate(): string {
     return this.plots[0]?.getDate() ?? '';
+  }
+
+  public getDates(): string[] {
+    return this.dates;
   }
 }

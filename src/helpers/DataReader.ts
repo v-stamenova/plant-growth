@@ -7,7 +7,7 @@ export default class DataReader {
   private filePath: string;
 
   private observations: Observation[];
-  
+
   public constructor(filePath: string) {
     this.filePath = filePath;
     this.observations = [];
@@ -21,11 +21,11 @@ export default class DataReader {
     if (!response.ok) {
       throw new Error(`Failed to fetch CSV: ${response.statusText}`);
     }
-    
+
     const text = await response.text();
     const data: string[][] = this.parseCSV(text);
     const rows = data.slice(1);
-    
+
     return this.parseField(rows);
   }
 
@@ -48,7 +48,7 @@ export default class DataReader {
         Number.parseFloat(row[19]!),
         Number.parseFloat(row[18]!),
       );
-  
+
       if (fieldNumber && !fieldObservationsMap.has(fieldNumber)) {
         fieldObservationsMap.set(fieldNumber, []);
       } else if (fieldNumber) {
@@ -64,4 +64,4 @@ export default class DataReader {
     return fields;
   }
 }
-    
+

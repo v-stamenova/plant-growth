@@ -18,8 +18,8 @@ export default class Plot {
     this.plant = new Plant(this.centerX, this.centerY, this.radius, observations);
   }
 
-  public update(elapsed: number): boolean {
-    return this.plant.update(elapsed);
+  public update(elapsed: number, dateIndex: number): boolean {
+    return this.plant.update(elapsed, dateIndex);
   }
 
 

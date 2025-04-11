@@ -43,10 +43,10 @@ export default class Plant {
   private getGreenHue(value: number): string {
     // Ensure the value stays within the 0 to 1 range.
     value = Math.max(0, Math.min(1, value));
-    
+
     // Define lightness: 90% for 0 (lighter green) and 30% for 1 (darker green).
     const lightness = 90 - 60 * value;
-    
+
     // Return an HSL color. Green hue is 120 degrees.
     return `hsl(120, 100%, ${lightness}%)`;
   }
@@ -54,9 +54,9 @@ export default class Plant {
   private getGreenYellowHue(value: number): string {
     // Clamp the value between 0 and 1.
     value = Math.max(0, Math.min(1, value));
-    
+
     const hue = 60 + 60 * value * 0.8;
-    
+
     // Use fixed saturation and lightness for a vivid color.
     return `hsl(${hue}, 100%, 50%)`;
   }
@@ -77,22 +77,15 @@ export default class Plant {
     this.radius = (observationPercentage / 100) * this.plotRadius;
   }
 
-  public update(elapsed: number): boolean {
-    this.timeToNextSwitch -= elapsed;
-
-    if (this.timeToNextSwitch <= 0) {
-      this.index++;
-      this.timeToNextSwitch = 2000;
-      if (this.index < this.observations.length && this.observations[this.index]) {
-        this.calculateRadius(this.observations[this.index]!.getCoverage());
-        if(this.index > 0 && this.observations[this.index - 1] && this.observations[this.index]) {
-          if(this.observations[this.index - 1]!.getCoverage() < this.observations[this.index]!.getCoverage()) {
-            this.color = this.getGreenHue(this.observations[this.index]!.getHeight());
-          } else {
-            this.color = this.getGreenYellowHue(this.observations[this.index]!.getHeight());
-          }
+  public update(elapsed: number, dateIndex: number): boolean {
+    if (dateIndex < this.observations.length && this.observations[dateIndex]) {
+      this.calculateRadius(this.observations[dateIndex]!.getCoverage());
+      if (dateIndex > 0 && this.observations[dateIndex - 1] && this.observations[dateIndex]) {
+        if (this.observations[dateIndex - 1]!.getCoverage() < this.observations[dateIndex]!.getCoverage()) {
+          this.color = this.getGreenHue(this.observations[dateIndex]!.getHeight());
+        } else {
+          this.color = this.getGreenYellowHue(this.observations[dateIndex]!.getHeight());
         }
-        console.log(this.color);
       }
     }
 
