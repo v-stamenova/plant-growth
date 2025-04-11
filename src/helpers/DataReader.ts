@@ -62,6 +62,21 @@ export default class DataReader {
       const field = new Field(fieldNumber, 100, 100, 20, observations);
       fields.push(field);
     }
+
+    const amountColumns: number = Math.max(...fields.map((field: Field) => field.getColumn()));
+    const amountRows: number = Math.max(...fields.map((field: Field) => field.getRow()));
+    for (let row = 0; row <= amountRows; row++) {
+      for (let column = 0; column <= amountColumns; column++) {
+        const isFieldPresent = fields.some(field =>
+          Math.round(field.getRow()) === row && Math.round(field.getColumn()) === column
+        );
+        if (!isFieldPresent) {
+          const observation = new Observation('', 0, 0, column, row);
+          fields.push(new Field(`23 R ${134 - row}-${101 + column * 2}`, 100, 100, 20, [observation]));
+        }
+      }
+    }
+
     return fields;
   }
 }

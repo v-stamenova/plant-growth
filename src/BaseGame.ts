@@ -26,8 +26,6 @@ export default class BaseGame extends Game {
 
   private dateSlider: Slider;
 
-  private maxFieldBoundaries: number[];
-
   public constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
@@ -36,7 +34,6 @@ export default class BaseGame extends Game {
     this.keyListener = new KeyListener();
     this.mouseListener = new MouseListener(canvas);
     this.fields = [];
-    this.maxFieldBoundaries = [];
     this.currentDate = '';
     this.dates = [];
     this.dateSlider = new Slider(0, 0, 0);
