@@ -14,7 +14,7 @@ export default class Field {
   private name: string;
   private dates: string[]
 
-  public constructor(name: string, posX: number, posY:number, plantMaxRadius: number, observations: Observation[]) {
+  public constructor(name: string, posX: number, posY: number, plantMaxRadius: number, observations: Observation[]) {
     this.column = observations[0]?.getColumn() ?? 0;
     this.row = observations[0]?.getRow() ?? 0;
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
@@ -93,5 +93,9 @@ export default class Field {
 
   public getDimensions(): number[] {
     return [this.width, this.height];
+  }
+
+  public getFieldNumber(): string {
+    return this.name;
   }
 }
