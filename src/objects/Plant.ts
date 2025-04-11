@@ -92,7 +92,6 @@ export default class Plant {
             this.color = this.getGreenYellowHue(this.observations[this.index]!.getHeight());
           }
         }
-        console.log(this.color);
       }
     }
 
