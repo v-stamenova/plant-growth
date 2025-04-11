@@ -16,9 +16,11 @@ export default class Plant {
 
   private timeToNextSwitch: number;
 
-  private color: number|string;
+  private image: HTMLImageElement;
 
-  private asc: boolean;
+  private width: number;
+  
+  private loadedImages: HTMLImageElement[];
 
   public constructor(centerX: number, centerY: number, plotRadius: number, observations: Observation[]) {
     this.centerX = centerX;
@@ -26,72 +28,62 @@ export default class Plant {
     this.plotRadius = plotRadius;
     this.observations = observations;
 
-    this.color = this.getGreenHue(0);
     this.radius = 0;
     this.index = 0;
-    this.asc = false;
 
     this.timeToNextSwitch = 2000;
 
-    if (this.index < this.observations.length && this.observations[this.index]) {
-      this.calculateRadius(this.observations[this.index]!.getCoverage());
-      this.color = this.getGreenHue(this.observations[this.index]!.getHeight());
-      this.asc = true;
+    this.loadedImages = [];
+    for(let i: number = 1; i < 11; i++) {
+      this.loadedImages.push(CanvasRenderer.loadNewImage(`../../img/plant-${i}.png`));
     }
-  }
 
-  private getGreenHue(value: number): string {
-    // Ensure the value stays within the 0 to 1 range.
-    value = Math.max(0, Math.min(1, value));
+    if (this.observations[this.index] != null) {
+      const imageIndex: number = this.ndviRange(this.observations[this.index]!.getNDVI());
+      this.image = this.loadedImages[imageIndex] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png'); 
+    } else {
+      this.image = CanvasRenderer.loadNewImage('../../img/plant-green.png');
+    }
 
-    // Define lightness: 90% for 0 (lighter green) and 30% for 1 (darker green).
-    const lightness = 90 - 60 * value;
-
-    // Return an HSL color. Green hue is 120 degrees.
-    return `hsl(120, 100%, ${lightness}%)`;
-  }
-
-  private getGreenYellowHue(value: number): string {
-    // Clamp the value between 0 and 1.
-    value = Math.max(0, Math.min(1, value));
-
-    const hue = 60 + 60 * value * 0.8;
-
-    // Use fixed saturation and lightness for a vivid color.
-    return `hsl(${hue}, 100%, 50%)`;
-  }
-
-  private getGreenShade(height: number): number {
-    this.asc = true;
-    height = Math.max(0, Math.min(1, height));
-    return 90 - 60 * height;
-  }
-
-  private getYellowShade(height: number): number {
-    this.asc = false;
-    height = Math.max(0, Math.min(1, height));
-    return 60 + 60 * (height * 0.8);
+    this.width = 50;
   }
 
   private calculateRadius(observationPercentage: number): void {
     this.radius = (observationPercentage / 100) * this.plotRadius;
   }
 
+  private updateImage(): void {
+    const ndvi: number = this.observations[this.index]!.getNDVI();
+    const imageNumber: number = this.ndviRange(ndvi);
+    this.image = this.loadedImages[imageNumber - 1] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png');
+  }
+
+  /**
+   * Calculates the index of the plant image based on the ndvi
+   * @param ndvi the NDVI index
+   * @returns the index of the picture
+   */
+  private ndviRange(ndvi: number): number {
+    if (ndvi <= 0.5) return 1;
+    if (ndvi > 0.95) return 10;
+    return Math.floor((ndvi - 0.7) / 0.05) + 2;
+  }
+
+  /**
+   * Updates the plant
+   * @param elapsed the time elapsed
+   * @returns if it still updates
+   */
   public update(elapsed: number): boolean {
     this.timeToNextSwitch -= elapsed;
 
     if (this.timeToNextSwitch <= 0) {
-      this.index++;
+      this.index += 1;
       this.timeToNextSwitch = 2000;
+
       if (this.index < this.observations.length && this.observations[this.index]) {
         this.calculateRadius(this.observations[this.index]!.getCoverage());
-        if(this.index > 0 && this.observations[this.index - 1] && this.observations[this.index]) {
-          if(this.observations[this.index - 1]!.getCoverage() < this.observations[this.index]!.getCoverage()) {
-            this.color = this.getGreenHue(this.observations[this.index]!.getHeight());
-          } else {
-            this.color = this.getGreenYellowHue(this.observations[this.index]!.getHeight());
-          }
-        }
+        this.updateImage();
       }
     }
 
@@ -120,13 +112,7 @@ export default class Plant {
    * @param canvas the selected canvas to render elements on
    */
   public render(canvas: HTMLCanvasElement): void {
-    //CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
-    if (Number(this.color))
-    {
-      CanvasRenderer.drawIrregularPlantishShape(canvas, this.centerX, this.centerY, this.radius, Number(this.color), this.asc);
-    } else if (this.color) {
-      CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color.toString(), this.color.toString());
-    }
+    CanvasRenderer.drawImageDimensions(canvas, this.image, this.centerX - this.width * 0.5, this.centerY - this.width * 0.5, this.width, this.width);
   }
 
   public getDate(): string {

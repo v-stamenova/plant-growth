@@ -56,10 +56,31 @@ export default class CanvasRenderer {
     canvas: HTMLCanvasElement,
     image: HTMLImageElement,
     dx: number,
-    dy: number,
+    dy: number
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.drawImage(image, dx, dy);
+  }
+
+  /**
+   * Drawing an image with dimensions
+   * @param canvas 
+   * @param image 
+   * @param dx 
+   * @param dy 
+   * @param dw 
+   * @param dh 
+   */
+  public static drawImageDimensions(
+    canvas: HTMLCanvasElement,
+    image: HTMLImageElement,
+    dx: number,
+    dy: number,
+    dw: number,
+    dh: number,
+  ): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.drawImage(image, dx, dy, dw, dh);
   }
 
   /**
