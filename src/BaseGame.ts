@@ -91,13 +91,13 @@ export default class BaseGame extends Game {
     if ((maxPosX ?? 0) <= this.canvas.width - (fieldWidth ?? 0) * 1.5) {
       xSpeed += cameraSpeed;
     }
-    if ((maxPosY ?? 0) <= this.canvas.height - (fieldHeight ?? 0) * 1.5) {
+    if ((maxPosY ?? 0) <= this.canvas.height - (fieldHeight ?? 0) * 10) {
       ySpeed += cameraSpeed;
     }
     if ((minPosX ?? 0) >= (fieldWidth ?? 0) / 2) {
       xSpeed -= cameraSpeed;
     }
-    if ((minPosY ?? 0) >= (fieldHeight ?? 0) / 2) {
+    if ((minPosY ?? 0) >= (fieldHeight ?? 0)) {
       ySpeed -= cameraSpeed;
     }
 
