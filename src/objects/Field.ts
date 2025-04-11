@@ -50,7 +50,7 @@ export default class Field {
 
     return true;
   }
-    
+
   /**
   * Moves the plant by the specified horizontal and vertical distances.
   *
@@ -85,6 +85,7 @@ export default class Field {
 
   public getDates(): string[] {
     return this.dates;
+  }
 
   public getPosition(): number[] {
     return [this.posX, this.posY];
