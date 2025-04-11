@@ -39,9 +39,9 @@ export default class Plant {
     }
 
     if (this.observations[this.index] != null) {
-      const imageIndex: number = this.ndviRange(this.observations[this.index]!.getNDVI());
-      this.image = this.loadedImages[imageIndex] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png'); 
-      this.width = this.plotRadius * 2.5 * (this.observations[this.index]!.getCoverage() / 100);
+      const imageIndex: number = this.ndviRange(this.observations[0]!.getNDVI());
+      this.image = this.loadedImages[imageIndex] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png');
+      this.width = this.plotRadius * 3 * (this.observations[0]!.getCoverage() / 100);
     } else {
       this.image = CanvasRenderer.loadNewImage('../../img/plant-green.png');
       this.width = 50;
@@ -62,15 +62,13 @@ export default class Plant {
   private ndviRange(ndvi: number): number {
     if (ndvi <= 0.5) return 1;
     if (ndvi > 0.95) return 10;
-    return Math.floor((ndvi - 0.7) / 0.05) + 2;
+    return Math.floor((ndvi - 0.5) / 0.05) + 2;
   }
 
   public update(elapsed: number, dateIndex: number): boolean {
     if (dateIndex < this.observations.length && this.observations[dateIndex]) {
-      if (dateIndex > 0 && this.observations[dateIndex - 1] && this.observations[dateIndex]) {
-        this.width = this.plotRadius * 3 * (this.observations[dateIndex]!.getCoverage() / 100);
-        this.updateImage(dateIndex);
-      }
+      this.width = this.plotRadius * 3 * (this.observations[dateIndex]!.getCoverage() / 100);
+      this.updateImage(dateIndex);
     }
 
     if(this.index === this.observations.length - 1) {
