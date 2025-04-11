@@ -47,6 +47,7 @@ export default class DataReader {
         Number.parseFloat(row[8]!),
         Number.parseFloat(row[19]!),
         Number.parseFloat(row[18]!),
+        Number.parseFloat(row[13]!)
       );
 
       if (fieldNumber && !fieldObservationsMap.has(fieldNumber)) {
