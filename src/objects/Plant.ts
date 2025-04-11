@@ -8,7 +8,7 @@ export default class Plant {
 
   private plotRadius: number;
 
-  private observations: Observation[];
+  public observations: Observation[];
 
   private index: number;
 
@@ -17,7 +17,7 @@ export default class Plant {
   private image: HTMLImageElement;
 
   private width: number;
-  
+
   private loadedImages: HTMLImageElement[];
 
   private rotation: number;
@@ -94,8 +94,8 @@ export default class Plant {
    *
    * @param canvas the selected canvas to render elements on
    */
-  public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawImageDimensionsRotation(canvas, this.image, this.centerX - this.width * 0.5, this.centerY - this.width * 0.5, this.width, this.width, this.rotation);
+  public render(canvas: HTMLCanvasElement, pos_x: number = this.centerX, posY: number = this.centerY, scale: number = 1): void {
+    CanvasRenderer.drawImageDimensionsRotation(canvas, this.image, pos_x - (this.width * scale) * 0.5, posY - (this.width * scale) * 0.5, this.width * scale, this.width * scale, this.rotation);
   }
 
   public getDate(): string {

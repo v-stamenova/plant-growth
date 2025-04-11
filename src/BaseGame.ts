@@ -110,15 +110,22 @@ export default class BaseGame extends Game {
     // if anything else is clicked, it closes the info panel again
     this.fields.forEach((field: Field) => {
       if (field.isHover(this.mouseListener)) {
-        if (this.mouseListener.isButtonDown(0) && !field.openInfoPanel) {
-          this.fields.forEach((otherField: Field) => {
-            otherField.openInfoPanel = false;
-          });
-          field.openInfoPanel = true;
+        if (this.mouseListener.buttonPressed(0)) {
+          if (field.openInfoPanel) {
+            field.openInfoPanel = false;
+          } else {
+            this.fields.forEach((otherField: Field) => {
+              otherField.openInfoPanel = false;
+            });
+            field.openInfoPanel = true;
+          }
         }
       }
     });
-    if (this.mouseListener.buttonPressed(0)) {
+
+    // only resets the info overlay if the user isnt changing the slider
+    // this way, the user can see the plant change over time in the info overlay
+    if (this.mouseListener.buttonPressed(0) && !this.dateSlider.holding) {
       this.fields.map((field: Field) => field.openInfoPanel = false);
     }
   }
@@ -143,7 +150,7 @@ export default class BaseGame extends Game {
     this.fields.forEach((field: Field) => field.render(this.canvas));
     this.fields.forEach((field: Field) => {
       if (field.openInfoPanel) {
-        field.renderInfoPanel(this.canvas);
+        field.renderInfoPanel(this.canvas, this.dateSlider.activeValue);
       }
     });
     CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');

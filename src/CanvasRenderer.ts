@@ -275,6 +275,79 @@ export default class CanvasRenderer {
   }
 
   /**
+   * Draw a filled rectangle with a gradient to the canvas.
+   * example of usecase is in Field.renderInfoPanel()
+   *
+   * @param canvas the canvas to draw to
+   * @param dx the x-coordinate of the rectangle's left left corner
+   * @param dy the y-coordinate of the rectangle's left left corner
+   * @param width the width of the rectangle from x to the right
+   * @param height the height of the rectrangle from y downwards
+   * @param colors an array of color stops for the gradient, each color is an object with properties `color` and `stop`
+   * @param angle the angle of the gradient in degrees (not radians)
+   * @param borderRadius the border radius of the rectangle
+   */
+  public static fillRectangleWithGradient(canvas: HTMLCanvasElement, dx: number, dy: number, width: number, height: number, colors: { red: number; green: number; blue: number; opacity: number; stop: number }[], angle: number = 0, borderRadius: number = 0): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+
+    ctx.moveTo(dx + borderRadius, dy);
+    ctx.lineTo(dx + width - borderRadius, dy);
+    ctx.arcTo(dx + width, dy, dx + width, dy + borderRadius, borderRadius);
+    ctx.lineTo(dx + width, dy + height - borderRadius);
+    ctx.arcTo(dx + width, dy + height, dx + width - borderRadius, dy + height, borderRadius);
+    ctx.lineTo(dx + borderRadius, dy + height);
+    ctx.arcTo(dx, dy + height, dx, dy + height - borderRadius, borderRadius);
+    ctx.lineTo(dx, dy + borderRadius);
+    ctx.arcTo(dx, dy, dx + borderRadius, dy, borderRadius);
+    ctx.closePath();
+
+    // Calculate gradient start and end points based on angle
+    const radians: number = angle * (Math.PI / 180);
+    const x0: number = dx + width / 2 + (width / 2) * Math.cos(radians);
+    const y0: number = dy + height / 2 - (height / 2) * Math.sin(radians);
+    const x1: number = dx + width / 2 - (width / 2) * Math.cos(radians);
+    const y1: number = dy + height / 2 + (height / 2) * Math.sin(radians);
+
+    const gradient: CanvasGradient = ctx.createLinearGradient(x0, y0, x1, y1);
+
+    colors.forEach(({
+      red, green, blue, opacity, stop,
+    }: { red: number; green: number; blue: number; opacity: number; stop: number }) => {
+      const color: string = `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+      gradient.addColorStop(stop, color);
+    });
+
+    ctx.fillStyle = gradient;
+    ctx.fill();
+  }
+
+  /**
+   * Draw line to the canvas
+   *
+   * @param canvas selected canvas
+   * @param x1 x position of the starting point of drawn line
+   * @param y1 y position of the starting point of drawn line
+   * @param x2 x position of the ending point of drawn line
+   * @param y2 y position of the ennding point of drawn line
+   * @param color the color of the line
+   * @param opacity the opacity of the line
+   * @param lineWidth the width of the line
+   */
+  public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1, lineWidth: number = 1): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+
+    ctx.globalAlpha = opacity;
+    ctx.strokeStyle = color;
+
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+
+    ctx.stroke();
+  }
+
+  /**
    * Draw a filled circle on the canvas
    *
    * @param canvas the canvas to draw to

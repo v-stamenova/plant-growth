@@ -9,7 +9,7 @@ export default class Plot {
 
   private radius: number;
 
-  private plant: Plant;
+  public plant: Plant;
 
   public constructor(centerX: number, centerY: number, radius: number, observations: Observation[]){
     this.centerX = centerX;
@@ -30,7 +30,7 @@ export default class Plot {
   public getDate(): string {
     return this.plant.getDate();
   }
-  
+
   /**
    * Moves the plant by the specified horizontal and vertical distances.
    *

@@ -56,7 +56,6 @@ export default class Field {
     } else {
       this.hover = false;
     }
-
     return this.hover;
   }
 
@@ -80,9 +79,34 @@ export default class Field {
     });
   }
 
-  public renderInfoPanel(canvas: HTMLCanvasElement) {
-    CanvasRenderer.drawRectangle(canvas, 0, 0, this.width, this.height, '#ff0404', '#240404', 1);
-    CanvasRenderer.writeText(canvas, this.name, this.posX, this.posY, 'left', 'system-ui', 25, 'red')
+  public renderInfoPanel(canvas: HTMLCanvasElement, dateIndex: number) {
+    if (this.plots[0]) {
+      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 'red', 0.3)
+
+      CanvasRenderer.drawRectangle(canvas, canvas.width * 0.75, 0, canvas.width * 0.3, canvas.height, '#525252', '#000000', 0.9);
+      CanvasRenderer.fillRectangleWithGradient(
+        canvas, canvas.width * 0.73, 0, canvas.width * 0.02, canvas.height,
+        [
+          {red: 0, green: 0, blue: 0, opacity: 0.9, stop: 1, },
+          { red: 0, green: 0, blue: 0, opacity: 0, stop: 0, },
+        ],
+        180,
+      );
+      CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, canvas.height * 0.105, '#421010', '#421010');
+      this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, 5);
+      CanvasRenderer.writeText(canvas, `Variety: placeholder`, canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white');
+      CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey');
+      CanvasRenderer.drawLine(canvas, canvas.width * 0.8, canvas.height * 0.4, canvas.width * 0.95, canvas.height * 0.4, 'white', 0.8, 6);
+
+      // the actual 'stats' of the plant.
+      // since there are 8 plants on a plot, stats from the first is taken
+      // (yes, they are the same anyways)
+      CanvasRenderer.writeText(canvas, `NDVI:`, canvas.width * 0.8, canvas.height * 0.5, 'left', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getNDVI() ?? 0).toFixed(3))}`, canvas.width * 0.95, canvas.height * 0.5, 'right', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `Cover%:`, canvas.width * 0.8, canvas.height * 0.55, 'left', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getCoverage() ?? 0).toFixed(3))}%`, canvas.width * 0.95, canvas.height * 0.55, 'right', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `More info to come`, canvas.width * 0.875, canvas.height * 0.6, 'center', 'system-ui', 18, 'lightgrey');
+    }
   }
 
   public render(canvas: HTMLCanvasElement): void {
