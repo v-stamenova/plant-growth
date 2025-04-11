@@ -43,6 +43,20 @@ export default class Field {
     }
   }
 
+  /**
+  * Moves the plant by the specified horizontal and vertical distances.
+  *
+  * @param deltaX is the horizontal distance the plant should move
+  * @param deltaY is the vertical distance the plant should move
+  */
+  public move(deltaX: number, deltaY: number): void {
+    this.posX += deltaX;
+    this.posY += deltaY;
+    this.plots.forEach((plot: Plot) => {
+      plot.move(deltaX, deltaY);
+    });
+  }
+
   public update(elapsed: number): boolean {
     this.plots.forEach((plot: Plot) => plot.update(elapsed));
     return true;

@@ -43,10 +43,10 @@ export default class Plant {
   private getGreenHue(value: number): string {
     // Ensure the value stays within the 0 to 1 range.
     value = Math.max(0, Math.min(1, value));
-    
+
     // Define lightness: 90% for 0 (lighter green) and 30% for 1 (darker green).
     const lightness = 90 - 60 * value;
-    
+
     // Return an HSL color. Green hue is 120 degrees.
     return `hsl(120, 100%, ${lightness}%)`;
   }
@@ -54,9 +54,9 @@ export default class Plant {
   private getGreenYellowHue(value: number): string {
     // Clamp the value between 0 and 1.
     value = Math.max(0, Math.min(1, value));
-    
+
     const hue = 60 + 60 * value * 0.8;
-    
+
     // Use fixed saturation and lightness for a vivid color.
     return `hsl(${hue}, 100%, 50%)`;
   }
@@ -103,7 +103,23 @@ export default class Plant {
     return true;
   }
 
+  /**
+   * Moves the plant by the specified horizontal and vertical distances.
+   *
+   * @param deltaX is the horizontal distance the plant should move
+   * @param deltaY is the vertical distance the plant should move
+   */
+  public move(deltaX: number, deltaY: number): void {
+    this.centerX += deltaX;
+    this.centerY += deltaY;
+  }
 
+
+  /**
+   * Renders elements on the canvas
+   *
+   * @param canvas the selected canvas to render elements on
+   */
   public render(canvas: HTMLCanvasElement): void {
     //CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
     if (Number(this.color))

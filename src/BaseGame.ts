@@ -48,7 +48,23 @@ export default class BaseGame extends Game {
    * Process all input. Called from the GameLoop.
    */
   public processInput(): void {
+    let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
+    if (this.keyListener.isKeyDown('ArrowDown')) {
+      ySpeed -= 5;
+    }
+    if (this.keyListener.isKeyDown('ArrowUp')) {
+      ySpeed += 5;
+    }
+    if (this.keyListener.isKeyDown('ArrowLeft')) {
+      xSpeed += 5;
+    }
+    if (this.keyListener.isKeyDown('ArrowRight')) {
+      xSpeed -= 5;
+    }
 
+    this.fields.forEach((field: Field) => {
+      field.move(xSpeed, ySpeed);
+    });
   }
 
   /**
