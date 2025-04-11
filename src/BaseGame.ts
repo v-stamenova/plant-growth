@@ -26,6 +26,8 @@ export default class BaseGame extends Game {
 
   private dateSlider: Slider;
 
+  private maxFieldBoundaries: number[];
+
   public constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
@@ -34,6 +36,7 @@ export default class BaseGame extends Game {
     this.keyListener = new KeyListener();
     this.mouseListener = new MouseListener(canvas);
     this.fields = [];
+    this.maxFieldBoundaries = [];
     this.currentDate = '';
     this.dates = [];
     this.dateSlider = new Slider(0, 0, 0);
@@ -59,6 +62,51 @@ export default class BaseGame extends Game {
    */
   public processInput(): void {
     this.dateSlider.processInput(this.mouseListener);
+
+    let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
+    const cameraSpeed: number = 15;
+    if (this.keyListener.isKeyDown('ArrowDown')) {
+      ySpeed -= cameraSpeed;
+    }
+    if (this.keyListener.isKeyDown('ArrowUp')) {
+      ySpeed += cameraSpeed;
+    }
+    if (this.keyListener.isKeyDown('ArrowLeft')) {
+      xSpeed += cameraSpeed;
+    }
+    if (this.keyListener.isKeyDown('ArrowRight')) {
+      xSpeed -= cameraSpeed;
+    }
+
+    // getting the maximum x and y positions for the fields to use as boundaries
+    const maxPosX: number = Math.max(...this.fields.map((field: Field) =>
+      field.getPosition()[0] ?? 0));
+    const maxPosY: number = Math.max(...this.fields.map((field: Field) =>
+      field.getPosition()[1] ?? 0));
+    const minPosX: number = Math.min(...this.fields.map((field: Field) =>
+      field.getPosition()[0] ?? 0));
+    const minPosY: number = Math.min(...this.fields.map((field: Field) =>
+      field.getPosition()[1] ?? 0));
+    const [fieldWidth, fieldHeight]: number[] =
+      [this.fields[0]?.getDimensions?.()[0] ?? 0, this.fields[0]?.getDimensions?.()[1] ?? 0];
+
+    // makes sure fields don't move if the camera gets out of the field boundaries
+    if ((maxPosX ?? 0) <= this.canvas.width - (fieldWidth ?? 0) * 1.5) {
+      xSpeed += cameraSpeed;
+    }
+    if ((maxPosY ?? 0) <= this.canvas.height - (fieldHeight ?? 0) * 1.5) {
+      ySpeed += cameraSpeed;
+    }
+    if ((minPosX ?? 0) >= (fieldWidth ?? 0) / 2) {
+      xSpeed -= cameraSpeed;
+    }
+    if ((minPosY ?? 0) >= (fieldHeight ?? 0) / 2) {
+      ySpeed -= cameraSpeed;
+    }
+
+    this.fields.forEach((field: Field) => {
+      field.move(xSpeed, ySpeed);
+    });
   }
 
   /**

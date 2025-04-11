@@ -96,7 +96,23 @@ export default class Plant {
     return true;
   }
 
+  /**
+   * Moves the plant by the specified horizontal and vertical distances.
+   *
+   * @param deltaX is the horizontal distance the plant should move
+   * @param deltaY is the vertical distance the plant should move
+   */
+  public move(deltaX: number, deltaY: number): void {
+    this.centerX += deltaX;
+    this.centerY += deltaY;
+  }
 
+
+  /**
+   * Renders elements on the canvas
+   *
+   * @param canvas the selected canvas to render elements on
+   */
   public render(canvas: HTMLCanvasElement): void {
     //CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, this.color, this.asc);
     if (Number(this.color))

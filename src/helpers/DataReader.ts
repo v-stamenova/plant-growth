@@ -36,7 +36,7 @@ export default class DataReader {
       .map(row => row.split(',').map(cell => cell.trim()));
   }
 
-  private parseField(rows: string[][]) {
+  private parseField(rows: string[][]): Field[] {
     const fieldObservationsMap: Map<string, Observation[]> = new Map();
 
     for (const row of rows) {
