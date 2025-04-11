@@ -77,20 +77,14 @@ export default class Plant {
     this.radius = (observationPercentage / 100) * this.plotRadius;
   }
 
-  public update(elapsed: number): boolean {
-    this.timeToNextSwitch -= elapsed;
-
-    if (this.timeToNextSwitch <= 0) {
-      this.index++;
-      this.timeToNextSwitch = 2000;
-      if (this.index < this.observations.length && this.observations[this.index]) {
-        this.calculateRadius(this.observations[this.index]!.getCoverage());
-        if(this.index > 0 && this.observations[this.index - 1] && this.observations[this.index]) {
-          if(this.observations[this.index - 1]!.getCoverage() < this.observations[this.index]!.getCoverage()) {
-            this.color = this.getGreenHue(this.observations[this.index]!.getHeight());
-          } else {
-            this.color = this.getGreenYellowHue(this.observations[this.index]!.getHeight());
-          }
+  public update(elapsed: number, dateIndex: number): boolean {
+    if (dateIndex < this.observations.length && this.observations[dateIndex]) {
+      this.calculateRadius(this.observations[dateIndex]!.getCoverage());
+      if (dateIndex > 0 && this.observations[dateIndex - 1] && this.observations[dateIndex]) {
+        if (this.observations[dateIndex - 1]!.getCoverage() < this.observations[dateIndex]!.getCoverage()) {
+          this.color = this.getGreenHue(this.observations[dateIndex]!.getHeight());
+        } else {
+          this.color = this.getGreenYellowHue(this.observations[dateIndex]!.getHeight());
         }
       }
     }

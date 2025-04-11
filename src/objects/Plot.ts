@@ -18,8 +18,8 @@ export default class Plot {
     this.plant = new Plant(this.centerX, this.centerY, this.radius, observations);
   }
 
-  public update(elapsed: number): boolean {
-    return this.plant.update(elapsed);
+  public update(elapsed: number, dateIndex: number): boolean {
+    return this.plant.update(elapsed, dateIndex);
   }
 
   public render(canvas: HTMLCanvasElement): void {
@@ -30,8 +30,7 @@ export default class Plot {
   public getDate(): string {
     return this.plant.getDate();
   }
-
-
+  
   /**
    * Moves the plant by the specified horizontal and vertical distances.
    *

@@ -22,6 +22,9 @@ export default class MouseListener {
 
   private buttonQueried: Record<number, boolean> = {};
 
+  private buttonUp: Record<number, boolean> = {};
+
+
   /**
    *
    * @param canvas the canvas element to which the relative coordinates should given
@@ -36,10 +39,12 @@ export default class MouseListener {
     });
     canvas.addEventListener('mousedown', (ev: MouseEvent) => {
       this.buttonDown[ev.button] = true;
+      this.buttonUp[ev.button] = false;
     });
     canvas.addEventListener('mouseup', (ev: MouseEvent) => {
       this.buttonDown[ev.button] = false;
       this.buttonQueried[ev.button] = false;
+      this.buttonUp[ev.button] = true;
     });
     if (disableContextMenu) {
       canvas.addEventListener('contextmenu', (ev: MouseEvent) => {
@@ -59,6 +64,16 @@ export default class MouseListener {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Checks whether a mouse button is up.
+   *
+   * @param buttonCode the mouse button to check
+   * @returns `true` when the specified button is currently down
+   */
+  public isButtonUp(buttonCode: number = 0): boolean {
+    return this.buttonUp[buttonCode] ?? false;
   }
 
   /**
@@ -84,5 +99,22 @@ export default class MouseListener {
    */
   public getMousePosition(): MouseCoordinates {
     return this.mouseCoordinates;
+  }
+
+  /**
+   * checks collision with cursor and square shape
+   *
+   * @returns true or false depending on if mouse if hovering over section
+   */
+  public checkCollision(posX: number, posY: number, width: number, height: number): boolean {
+    if (
+      this.mouseCoordinates.x > posX &&
+      this.mouseCoordinates.x < posX + width &&
+      this.mouseCoordinates.y > posY &&
+      this.mouseCoordinates.y < posY + height
+    ) {
+      return true;
+    }
+    return false;
   }
 }
