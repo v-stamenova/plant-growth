@@ -45,7 +45,12 @@ export default class BaseGame extends Game {
         this.fields = data;
         this.currentDate = this.fields[0]?.getDate() ?? '';
         this.dates = this.fields[0]?.getDates() ?? [];
-        this.dateSlider = new Slider(window.innerWidth * 0.3, window.innerHeight * 0.025, window.innerWidth * 0.2, 0, this.dates.length - 1, 0, 0)
+
+        // here, the 0.3 stands for 30% for the canvas.
+        // as in, canvas.width * 0.3 is done in the class to render
+        // this is done because the canvas dimensions can change, and if they are initialised
+        // at posX = canvas.width * 0.3, it wont change if the canvas size changes
+        this.dateSlider = new Slider(0.2, 0.025, 0.37, 0, this.dates.length - 1, 0, 0);
 
         console.log('CSV Data:', data);
       })
@@ -62,16 +67,16 @@ export default class BaseGame extends Game {
 
     let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
     const cameraSpeed: number = 15;
-    if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyW')) {
+    if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyS')) {
       ySpeed -= cameraSpeed;
     }
-    if (this.keyListener.isKeyDown('ArrowUp')) {
+    if (this.keyListener.isKeyDown('ArrowUp') || this.keyListener.isKeyDown('KeyW')) {
       ySpeed += cameraSpeed;
     }
-    if (this.keyListener.isKeyDown('ArrowLeft')) {
+    if (this.keyListener.isKeyDown('ArrowLeft') || this.keyListener.isKeyDown('KeyA')) {
       xSpeed += cameraSpeed;
     }
-    if (this.keyListener.isKeyDown('ArrowRight')) {
+    if (this.keyListener.isKeyDown('ArrowRight') || this.keyListener.isKeyDown('KeyD')) {
       xSpeed -= cameraSpeed;
     }
 
@@ -97,7 +102,7 @@ export default class BaseGame extends Game {
     if ((minPosX ?? 0) >= (fieldWidth ?? 0) / 2) {
       xSpeed -= cameraSpeed;
     }
-    if ((minPosY ?? 0) >= (fieldHeight ?? 0)) {
+    if ((minPosY ?? 0) >= (fieldHeight ?? 0) * 1.5) {
       ySpeed -= cameraSpeed;
     }
 
@@ -137,6 +142,9 @@ export default class BaseGame extends Game {
    * @returns true if the game should continue
    */
   public update(elapsed: number): boolean {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+
     this.fields.forEach((field: Field) => field.update(elapsed, this.dateSlider.activeValue));
     this.currentDate = this.dates[this.dateSlider.activeValue] ?? '';
     return true;
@@ -153,9 +161,9 @@ export default class BaseGame extends Game {
         field.renderInfoPanel(this.canvas, this.dateSlider.activeValue);
       }
     });
-    CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');
     this.dateSlider.render(this.canvas);
-    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.215, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'blue')
-    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.55, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'blue')
+    CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4, this.canvas.height * 0.1, 'center', 'sans-serif', 30, 'black', true);
+    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17, this.canvas.height * 0.045, 'right', 'system-ui', 20, 'black', true);
+    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'black', true)
   }
 }

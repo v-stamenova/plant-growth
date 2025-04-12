@@ -129,7 +129,7 @@ export default class CanvasRenderer {
    * @param yCoordinate y-coordinate of the text
    * @param alignment align of the text
    * @param fontFamily font family to use when writing text
-   * @param fontSize font size in pixels
+   * @param baseFontSize base font size in pixels
    * @param color colour of text to write
    */
   public static writeText(
@@ -139,10 +139,17 @@ export default class CanvasRenderer {
     yCoordinate: number,
     alignment: CanvasTextAlign = 'center',
     fontFamily: string = 'sans-serif',
-    fontSize: number = 20,
+    baseFontSize: number = 20,
     color: string = 'red',
+    responsize: boolean = false,
+    shrinkThreshold: number = 500
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    let fontSize: number = baseFontSize;
+
+    if (responsize) {
+      fontSize = canvas.width < shrinkThreshold ? (canvas.width / shrinkThreshold) * baseFontSize : baseFontSize;
+    }
     ctx.font = `${fontSize}px ${fontFamily}`;
     ctx.fillStyle = color;
     ctx.textAlign = alignment;
