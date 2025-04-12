@@ -23,7 +23,7 @@ export default class Field {
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
     this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
     this.posX = this.column * (this.width + 50) + 50;
-    this.posY = this.row * (this.height + 50) + window.innerHeight * 0.13;
+    this.posY = this.row * (this.height + window.innerHeight * 0.04) + window.innerHeight * 0.13;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;

@@ -58,10 +58,10 @@ export default class Slider {
    */
   public render(canvas: HTMLCanvasElement): void {
     const sliderWidth: number = canvas.width * 0.05;
-    CanvasRenderer.fillRectangle(canvas, (this.posX * canvas.width) - sliderWidth / 2, (this.posY * canvas.height), (this.width * canvas.width) + sliderWidth, canvas.height * 0.03, 'grey');
-    CanvasRenderer.drawRectangle(canvas, (this.posX * canvas.width) - sliderWidth / 2, (this.posY * canvas.height), (this.width * canvas.width) + sliderWidth, canvas.height * 0.03, 'black');
+    CanvasRenderer.fillRectangle(canvas, (this.posX * canvas.width) - sliderWidth / 2, 30, (this.width * canvas.width) + sliderWidth, 30, 'grey');
+    CanvasRenderer.drawRectangle(canvas, (this.posX * canvas.width) - sliderWidth / 2, 30, (this.width * canvas.width) + sliderWidth, 30, 'black');
 
-    CanvasRenderer.fillRectangle(canvas, (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2, (this.posY * canvas.height), sliderWidth, canvas.height * 0.03, 'white');
-    CanvasRenderer.drawRectangle(canvas, (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2, (this.posY * canvas.height), sliderWidth, canvas.height * 0.03, 'black');
+    CanvasRenderer.fillRectangle(canvas, (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2, 30, sliderWidth, 30, 'white');
+    CanvasRenderer.drawRectangle(canvas, (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2, 30, sliderWidth, 30, 'black');
   }
 }

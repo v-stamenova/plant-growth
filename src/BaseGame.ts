@@ -162,8 +162,8 @@ export default class BaseGame extends Game {
       }
     });
     this.dateSlider.render(this.canvas);
-    CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4, this.canvas.height * 0.1, 'center', 'sans-serif', 30, 'black', true);
-    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17, this.canvas.height * 0.045, 'right', 'system-ui', 20, 'black', true);
-    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'black', true)
+    CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4, 100, 'center', 'sans-serif', 30, 'black', true);
+    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17, 55, 'right', 'system-ui', 20, 'black', true);
+    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6, 55, 'left', 'system-ui', 20, 'black', true)
   }
 }
