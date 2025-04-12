@@ -1,4 +1,5 @@
 import CanvasRenderer from '../CanvasRenderer.js';
+import MouseListener from '../MouseListener.js';
 import Observation from './Observation.js';
 import Plot from './Plot.js';
 
@@ -12,7 +13,9 @@ export default class Field {
   private plantMaxRadius: number;
   private plots: Plot[];
   private name: string;
-  private dates: string[]
+  private dates: string[];
+  private hover: boolean = false;
+  public openInfoPanel: boolean = false;
 
   public constructor(name: string, posX: number, posY: number, plantMaxRadius: number, observations: Observation[]) {
     this.column = observations[0]?.getColumn() ?? 0;
@@ -25,7 +28,9 @@ export default class Field {
     this.plots = [];
     this.name = name;
     this.dates = observations.map((observation: Observation) => observation.getDate());
-    this.fillPlots(observations);
+    if (observations[0]?.getCoverage() ?? 0 > 0) {
+      this.fillPlots(observations);
+    }
   }
 
   public fillPlots(observations: Observation[]): void {
@@ -43,6 +48,15 @@ export default class Field {
 
       index += 1;
     }
+  }
+
+  public isHover(mouseListener: MouseListener): boolean {
+    if (mouseListener.checkCollision(this.posX, this.posY, this.width, this.height)) {
+      this.hover = true;
+    } else {
+      this.hover = false;
+    }
+    return this.hover;
   }
 
   public update(elapsed: number, dateIndex: number): boolean {
@@ -65,10 +79,43 @@ export default class Field {
     });
   }
 
+  public renderInfoPanel(canvas: HTMLCanvasElement, dateIndex: number) {
+    if (this.plots[0]) {
+      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 'red', 0.3)
+
+      CanvasRenderer.drawRectangle(canvas, canvas.width * 0.75, 0, canvas.width * 0.3, canvas.height, '#525252', '#000000', 0.9);
+      CanvasRenderer.fillRectangleWithGradient(
+        canvas, canvas.width * 0.73, 0, canvas.width * 0.02, canvas.height,
+        [
+          {red: 0, green: 0, blue: 0, opacity: 0.9, stop: 1, },
+          { red: 0, green: 0, blue: 0, opacity: 0, stop: 0, },
+        ],
+        180,
+      );
+      CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, canvas.height * 0.105, '#421010', '#421010');
+      this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, 5);
+      CanvasRenderer.writeText(canvas, `Variety: placeholder`, canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white');
+      CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey');
+      CanvasRenderer.drawLine(canvas, canvas.width * 0.8, canvas.height * 0.4, canvas.width * 0.95, canvas.height * 0.4, 'white', 0.8, 6);
+
+      // the actual 'stats' of the plant.
+      // since there are 8 plants on a plot, stats from the first is taken
+      // (yes, they are the same anyways)
+      CanvasRenderer.writeText(canvas, `NDVI:`, canvas.width * 0.8, canvas.height * 0.5, 'left', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getNDVI() ?? 0).toFixed(3))}`, canvas.width * 0.95, canvas.height * 0.5, 'right', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `Cover%:`, canvas.width * 0.8, canvas.height * 0.55, 'left', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getCoverage() ?? 0).toFixed(3))}%`, canvas.width * 0.95, canvas.height * 0.55, 'right', 'system-ui', 20, 'lightgrey');
+      CanvasRenderer.writeText(canvas, `More info to come`, canvas.width * 0.875, canvas.height * 0.6, 'center', 'system-ui', 18, 'lightgrey');
+    }
+  }
+
   public render(canvas: HTMLCanvasElement): void {
     CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404');
     this.plots.forEach((plot: Plot) => plot.render(canvas));
     CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX , this.height + this.posY + 20, 'center');
+    if (this.hover) {
+      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404', 0.3);
+    }
   }
 
   public getColumn(): number {

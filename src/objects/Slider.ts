@@ -19,7 +19,7 @@ export default class Slider {
   // why use this.holding? the reason is:
   // incase we have multiple sliders, we can use this.holding to make su
   // you can only move 1 slider at the same time
-  private holding: boolean = false;
+  public holding: boolean = false;
 
   public constructor(posX: number, posY: number, width: number, minValue: number = 0, maxValue: number = 0, activeValue: number = 0, decimals: number=0) {
     this.posX = posX;

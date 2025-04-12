@@ -64,12 +64,12 @@ export default class CanvasRenderer {
 
   /**
    * Drawing an image with dimensions
-   * @param canvas 
-   * @param image 
-   * @param dx 
-   * @param dy 
-   * @param dw 
-   * @param dh 
+   * @param canvas
+   * @param image
+   * @param dx
+   * @param dy
+   * @param dw
+   * @param dh
    */
   public static drawImageDimensions(
     canvas: HTMLCanvasElement,
@@ -190,10 +190,10 @@ export default class CanvasRenderer {
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.beginPath();
-    
+
     const numPoints = 30;                // More points yield a smoother but irregular shape
     const variation = 0.15 * radius;       // Adjust the variation factor for more/less irregularity
-    
+
     for (let i = 0; i < numPoints; i++) {
       const angle = (i / numPoints) * 2 * Math.PI;
       // Randomize the radius for each point around the circle
@@ -206,16 +206,16 @@ export default class CanvasRenderer {
         ctx.lineTo(x, y);
       }
     }
-    
+
     ctx.closePath();
-    
+
     // Create a radial gradient using HSL colors based on the given hue.
     // Here, the saturation is fixed at 70%, while lightness varies to create depth.
     const gradient = ctx.createRadialGradient(
       centerX, centerY, radius * 0.1,
       centerX, centerY, radius
     );
-    
+
     // Inner color is lighter, mid is base, outer is darker.
 
     if (asc) {
@@ -227,15 +227,15 @@ export default class CanvasRenderer {
       gradient.addColorStop(0.5, `hsl(${hue}, 70%, 50%)`);
       gradient.addColorStop(1, `hsl(${hue}, 70%, 50%)`);
     }
-    
+
     ctx.fillStyle = gradient;
     // Use a slightly darker outline to maintain consistency.
     ctx.strokeStyle = `hsl(${hue}, 70%, 35%)`;
     ctx.fill();
     ctx.stroke();
   }
-  
-  
+
+
 
   /**
    * Draw a rectangle outline to the canvas
@@ -256,16 +256,93 @@ export default class CanvasRenderer {
     height: number,
     color: string = 'red',
     fillColor?: string,
+    opacity: number = 1,
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.save();
+    ctx.globalAlpha = opacity;
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.rect(dx, dy, width, height);
-    
+
     if (fillColor) {
       ctx.fillStyle = fillColor;
       ctx.fill();
     }
+
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /**
+   * Draw a filled rectangle with a gradient to the canvas.
+   * example of usecase is in Field.renderInfoPanel()
+   *
+   * @param canvas the canvas to draw to
+   * @param dx the x-coordinate of the rectangle's left left corner
+   * @param dy the y-coordinate of the rectangle's left left corner
+   * @param width the width of the rectangle from x to the right
+   * @param height the height of the rectrangle from y downwards
+   * @param colors an array of color stops for the gradient, each color is an object with properties `color` and `stop`
+   * @param angle the angle of the gradient in degrees (not radians)
+   * @param borderRadius the border radius of the rectangle
+   */
+  public static fillRectangleWithGradient(canvas: HTMLCanvasElement, dx: number, dy: number, width: number, height: number, colors: { red: number; green: number; blue: number; opacity: number; stop: number }[], angle: number = 0, borderRadius: number = 0): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+
+    ctx.moveTo(dx + borderRadius, dy);
+    ctx.lineTo(dx + width - borderRadius, dy);
+    ctx.arcTo(dx + width, dy, dx + width, dy + borderRadius, borderRadius);
+    ctx.lineTo(dx + width, dy + height - borderRadius);
+    ctx.arcTo(dx + width, dy + height, dx + width - borderRadius, dy + height, borderRadius);
+    ctx.lineTo(dx + borderRadius, dy + height);
+    ctx.arcTo(dx, dy + height, dx, dy + height - borderRadius, borderRadius);
+    ctx.lineTo(dx, dy + borderRadius);
+    ctx.arcTo(dx, dy, dx + borderRadius, dy, borderRadius);
+    ctx.closePath();
+
+    // Calculate gradient start and end points based on angle
+    const radians: number = angle * (Math.PI / 180);
+    const x0: number = dx + width / 2 + (width / 2) * Math.cos(radians);
+    const y0: number = dy + height / 2 - (height / 2) * Math.sin(radians);
+    const x1: number = dx + width / 2 - (width / 2) * Math.cos(radians);
+    const y1: number = dy + height / 2 + (height / 2) * Math.sin(radians);
+
+    const gradient: CanvasGradient = ctx.createLinearGradient(x0, y0, x1, y1);
+
+    colors.forEach(({
+      red, green, blue, opacity, stop,
+    }: { red: number; green: number; blue: number; opacity: number; stop: number }) => {
+      const color: string = `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+      gradient.addColorStop(stop, color);
+    });
+
+    ctx.fillStyle = gradient;
+    ctx.fill();
+  }
+
+  /**
+   * Draw line to the canvas
+   *
+   * @param canvas selected canvas
+   * @param x1 x position of the starting point of drawn line
+   * @param y1 y position of the starting point of drawn line
+   * @param x2 x position of the ending point of drawn line
+   * @param y2 y position of the ennding point of drawn line
+   * @param color the color of the line
+   * @param opacity the opacity of the line
+   * @param lineWidth the width of the line
+   */
+  public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1, lineWidth: number = 1): void {
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+
+    ctx.globalAlpha = opacity;
+    ctx.strokeStyle = color;
+
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
 
     ctx.stroke();
   }
