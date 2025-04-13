@@ -148,14 +148,15 @@ export default class BaseGame extends Game {
   public render(): void {
     CanvasRenderer.clearCanvas(this.canvas);
     this.fields.forEach((field: Field) => field.render(this.canvas));
+    CanvasRenderer.drawRectangle(this.canvas, 0, 0, this.canvas.width, 60, 'white', 'white');
     this.fields.forEach((field: Field) => {
       if (field.openInfoPanel) {
         field.renderInfoPanel(this.canvas, this.dateSlider.activeValue);
       }
     });
-    CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 50, 'left', 'sans-serif', 40, 'blue');
+    CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 45, 'left', 'sans-serif', 40, 'blue');
     this.dateSlider.render(this.canvas);
-    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.215, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'blue')
-    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.55, this.canvas.height * 0.045, 'left', 'system-ui', 20, 'blue')
+    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.18, this.canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
+    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.55, this.canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
   }
 }
