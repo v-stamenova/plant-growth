@@ -37,8 +37,10 @@ export default class Field {
     let index: number = 0;
     let centerX: number = this.posX + this.plantMaxRadius * 1.3;
     let centerY: number = this.posY + this.plantMaxRadius * 1.2;
+    const flowerId: number =  Math.round(Math.random());
+
     while (index < 8) {
-      this.plots.push(new Plot(centerX, centerY, this.plantMaxRadius, observations));
+      this.plots.push(new Plot(centerX, centerY, this.plantMaxRadius, observations, flowerId));
       centerX += this.plantMaxRadius * 2.1;
 
       if(index == 3){

@@ -39,7 +39,7 @@ export default class BaseGame extends Game {
     this.dateSlider = new Slider(0, 0, 0);
 
 
-    this.reader = new DataReader('../data/rilland_2022.csv');
+    this.reader = new DataReader('../data/rilland_2023_dap.csv');
     this.reader.load()
       .then((data: Field[]) => {
         this.fields = data;

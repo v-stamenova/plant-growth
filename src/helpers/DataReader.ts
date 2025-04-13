@@ -47,7 +47,8 @@ export default class DataReader {
         Number.parseFloat(row[8]!),
         Number.parseFloat(row[19]!),
         Number.parseFloat(row[18]!),
-        Number.parseFloat(row[13]!)
+        Number.parseFloat(row[13]!),
+        Number.parseFloat(row[20]!)
       );
 
       if (fieldNumber && !fieldObservationsMap.has(fieldNumber)) {
@@ -71,7 +72,7 @@ export default class DataReader {
           Math.round(field.getRow()) === row && Math.round(field.getColumn()) === column
         );
         if (!isFieldPresent) {
-          const observation = new Observation('', 0, 0, column, row, 0);
+          const observation = new Observation('', 0, 0, column, row, 0, 0);
           fields.push(new Field(`23 R ${134 - row}-${101 + column * 2}`, 100, 100, 20, [observation]));
         }
       }

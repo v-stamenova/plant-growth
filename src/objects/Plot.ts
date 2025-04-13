@@ -11,11 +11,11 @@ export default class Plot {
 
   public plant: Plant;
 
-  public constructor(centerX: number, centerY: number, radius: number, observations: Observation[]){
+  public constructor(centerX: number, centerY: number, radius: number, observations: Observation[], flowerId: number){
     this.centerX = centerX;
     this.centerY = centerY;
     this.radius = radius;
-    this.plant = new Plant(this.centerX, this.centerY, this.radius, observations);
+    this.plant = new Plant(this.centerX, this.centerY, this.radius, observations, flowerId);
   }
 
   public update(elapsed: number, dateIndex: number): boolean {
