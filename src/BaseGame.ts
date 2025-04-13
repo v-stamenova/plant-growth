@@ -45,7 +45,17 @@ export default class BaseGame extends Game {
         this.fields = data;
         this.currentDate = this.fields[0]?.getDate() ?? '';
         this.dates = this.fields[0]?.getDates() ?? [];
-        this.dateSlider = new Slider(window.innerWidth * 0.3, window.innerHeight * 0.025, window.innerWidth * 0.2, 0, this.dates.length - 1, 0, 0)
+        this.dateSlider = new Slider(
+          window.innerWidth * 0.3,
+          window.innerHeight * 0.025,
+          window.innerWidth * 0.2,
+          0,
+          this.dates.length - 1,
+          0,
+          0,
+          this.dates[0],
+          this.dates[this.dates.length - 1]
+        );
 
         console.log('CSV Data:', data);
       })
@@ -137,8 +147,8 @@ export default class BaseGame extends Game {
    * @returns true if the game should continue
    */
   public update(elapsed: number): boolean {
-    this.fields.forEach((field: Field) => field.update(elapsed, this.dateSlider.activeValue));
-    this.currentDate = this.dates[this.dateSlider.activeValue] ?? '';
+    this.fields.forEach((field: Field) => field.update(elapsed, this.dateSlider.getActiveValue()));
+    this.currentDate = this.dates[this.dateSlider.getActiveValue()] ?? '';
     return true;
   }
 
@@ -151,12 +161,10 @@ export default class BaseGame extends Game {
     CanvasRenderer.drawRectangle(this.canvas, 0, 0, this.canvas.width, 60, 'white', 'white');
     this.fields.forEach((field: Field) => {
       if (field.openInfoPanel) {
-        field.renderInfoPanel(this.canvas, this.dateSlider.activeValue);
+        field.renderInfoPanel(this.canvas, this.dateSlider.getActiveValue());
       }
     });
     CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 45, 'left', 'sans-serif', 40, 'blue');
     this.dateSlider.render(this.canvas);
-    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.18, this.canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
-    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.55, this.canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
   }
 }

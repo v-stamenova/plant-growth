@@ -12,16 +12,30 @@ export default class Slider {
 
   private maxValue: number;
 
-  public activeValue: number;
+  private activeValue: number;
 
   private numDecimals: number;
+
+  private leftLabel: string;
+
+  private rightLabel: string;
 
   // why use this.holding? the reason is:
   // incase we have multiple sliders, we can use this.holding to make su
   // you can only move 1 slider at the same time
   public holding: boolean = false;
 
-  public constructor(posX: number, posY: number, width: number, minValue: number = 0, maxValue: number = 0, activeValue: number = 0, decimals: number=0) {
+  public constructor(
+    posX: number,
+    posY: number,
+    width: number,
+    minValue: number = 0,
+    maxValue: number = 0,
+    activeValue: number = 0,
+    decimals: number=0,
+    leftLabel: string = '',
+    rightLabel: string = ''
+  ) {
     this.posX = posX;
     this.posY = posY;
     this.width = width;
@@ -29,6 +43,8 @@ export default class Slider {
     this.maxValue = maxValue;
     this.activeValue = activeValue;
     this.numDecimals = decimals;
+    this.leftLabel = leftLabel;
+    this.rightLabel = rightLabel;
   }
 
   /**
@@ -63,5 +79,16 @@ export default class Slider {
 
     CanvasRenderer.fillRectangle(canvas, this.posX + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * this.width) - sliderWidth / 2, this.posY, sliderWidth, canvas.height * 0.03, 'white');
     CanvasRenderer.drawRectangle(canvas, this.posX + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * this.width) - sliderWidth / 2, this.posY, sliderWidth, canvas.height * 0.03, 'black');
+  
+    CanvasRenderer.writeText(canvas, this.leftLabel, canvas.width * 0.18, canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
+    CanvasRenderer.writeText(canvas, this.rightLabel, canvas.width * 0.55, canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
+  }
+
+  /**
+   * A getter for encapsulation the active value
+   * @returns the active value
+   */
+  public getActiveValue(): number {
+    return this.activeValue;
   }
 }
