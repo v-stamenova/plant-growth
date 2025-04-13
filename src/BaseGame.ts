@@ -62,16 +62,16 @@ export default class BaseGame extends Game {
 
     let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
     const cameraSpeed: number = 15;
-    if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyW')) {
+    if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyS')) {
       ySpeed -= cameraSpeed;
     }
-    if (this.keyListener.isKeyDown('ArrowUp')) {
+    if (this.keyListener.isKeyDown('ArrowUp') || this.keyListener.isKeyDown('KeyW')) {
       ySpeed += cameraSpeed;
     }
-    if (this.keyListener.isKeyDown('ArrowLeft')) {
+    if (this.keyListener.isKeyDown('ArrowLeft') || this.keyListener.isKeyDown('KeyA')) {
       xSpeed += cameraSpeed;
     }
-    if (this.keyListener.isKeyDown('ArrowRight')) {
+    if (this.keyListener.isKeyDown('ArrowRight') || this.keyListener.isKeyDown('KeyD')) {
       xSpeed -= cameraSpeed;
     }
 
