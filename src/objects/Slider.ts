@@ -53,7 +53,12 @@ export default class Slider {
    * @param mouseListener is what listenes to the mouse inputs
    */
   public processInput(mouseListener: MouseListener): void {
-    if (mouseListener.checkCollision(this.posX, this.posY, this.width + window.innerWidth * 0.05, window.innerHeight * 0.03)) {
+    if (mouseListener.checkCollision(
+      this.posX,
+      this.posY,
+      this.width + window.innerWidth * 0.05,
+      window.innerHeight * 0.03
+    )) {
       if (mouseListener.isButtonDown(0)) {
         this.holding = true;
       }
@@ -62,8 +67,15 @@ export default class Slider {
       this.holding = false;
     }
     if (this.holding) {
-      this.activeValue = Math.min(1, Math.max(0, (mouseListener.getMousePosition().x - this.posX) / (this.width)))
-      this.activeValue = Math.round((10 ** this.numDecimals) * (this.activeValue * (this.maxValue - this.minValue) + this.minValue)) / (10 ** this.numDecimals);
+      this.activeValue = Math.min(
+        1,
+        Math.max(0, (mouseListener.getMousePosition().x - this.posX) / (this.width))
+      );
+      this.activeValue = Math.round(
+        (10 ** this.numDecimals) * (
+          this.activeValue * (this.maxValue - this.minValue) + this.minValue
+        )
+      ) / (10 ** this.numDecimals);
     }
   }
 

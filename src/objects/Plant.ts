@@ -26,7 +26,13 @@ export default class Plant {
 
   private isFlowerVisible: boolean;
 
-  public constructor(centerX: number, centerY: number, plotRadius: number, observations: Observation[], flowerId: number) {
+  public constructor(
+    centerX: number,
+    centerY: number,
+    plotRadius: number,
+    observations: Observation[],
+    flowerId: number
+  ) {
     this.centerX = centerX;
     this.centerY = centerY;
     this.plotRadius = plotRadius;
@@ -66,19 +72,31 @@ export default class Plant {
    * @param ndvi the NDVI index
    * @returns the index of the picture
    */
+  // eslint-disable-next-line class-methods-use-this
   private ndviRange(ndvi: number): number {
-    if (ndvi <= 0.5) return 1;
-    if (ndvi > 0.95) return 10;
+    if (ndvi <= 0.5) {
+      return 1;
+    }
+    if (ndvi > 0.95) {
+      return 10;
+    }
     return Math.floor((ndvi - 0.5) / 0.05) + 2;
   }
 
+  /**
+   * Updates the plant
+   * @param elapsed the time elapsed
+   * @param dateIndex the current date
+   * @returns if the plant still updates
+   */
   public update(elapsed: number, dateIndex: number): boolean {
     if (dateIndex < this.observations.length && this.observations[dateIndex]) {
       this.width = this.plotRadius * 3 * (this.observations[dateIndex]!.getCoverage() / 100);
       this.updateImage(dateIndex);
 
       this.isFlowerVisible = false;
-      if (this.observations[dateIndex]!.getDAP() > 50 && this.observations[dateIndex]!.getDAP() < 70) {
+      if (this.observations[dateIndex]!.getDAP() > 50
+      && this.observations[dateIndex]!.getDAP() < 70) {
         this.isFlowerVisible = true;
       }
     }
@@ -102,16 +120,38 @@ export default class Plant {
   }
 
   /**
-   * Renders elements on the canvas
-   *
-   * @param canvas the selected canvas to render elements on
+   * Renders the element on the canvas
+   * @param canvas the canvas
+   * @param posX position X
+   * @param posY position Y
+   * @param scale the scale
    */
-  public render(canvas: HTMLCanvasElement, pos_x: number = this.centerX, posY: number = this.centerY, scale: number = 1): void
-   {
-    CanvasRenderer.drawImageDimensionsRotation(canvas, this.image, pos_x - (this.width * scale) * 0.5, posY - (this.width * scale) * 0.5, this.width * scale, this.width * scale, this.rotation);
-    
+  public render(
+    canvas: HTMLCanvasElement,
+    posX: number = this.centerX,
+    posY: number = this.centerY,
+    scale: number = 1
+  ): void {
+    CanvasRenderer.drawImageDimensionsRotation(
+      canvas,
+      this.image,
+      posX - (this.width * scale) * 0.5,
+      posY - (this.width * scale) * 0.5,
+      this.width * scale,
+      this.width * scale,
+      this.rotation
+    );
+  
     if (this.isFlowerVisible) {
-      CanvasRenderer.drawImageDimensionsRotation(canvas, this.flower, this.centerX - this.width * 0.5, this.centerY - this.width * 0.5, this.width, this.width, this.rotation);
+      CanvasRenderer.drawImageDimensionsRotation(
+        canvas,
+        this.flower,
+        this.centerX - this.width * 0.5,
+        this.centerY - this.width * 0.5,
+        this.width,
+        this.width,
+        this.rotation
+      );
     }
   }
 

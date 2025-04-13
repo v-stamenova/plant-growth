@@ -3,10 +3,8 @@ import Game from './Game.js';
 import CanvasRenderer from './CanvasRenderer.js';
 import KeyListener from './KeyListener.js';
 import MouseListener from './MouseListener.js';
-import Plot from './objects/Plot.js';
 import Field from './objects/Field.js';
 import DataReader from './helpers/DataReader.js';
-import Observation from './objects/Observation.js';
 import Slider from './objects/Slider.js';
 
 export default class BaseGame extends Game {

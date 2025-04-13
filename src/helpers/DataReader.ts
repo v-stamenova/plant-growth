@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/typedef */
-import { parse } from 'csv-parse/sync';
 import Observation from '../objects/Observation.js';
 import Field from '../objects/Field.js';
 
@@ -14,7 +13,8 @@ export default class DataReader {
   }
 
   /**
-   *
+   * Async loads the drone data
+   * @returns the fields within a promise
    */
   public async load(): Promise<Field[]> {
     const response = await fetch(this.filePath);
@@ -29,6 +29,12 @@ export default class DataReader {
     return this.parseField(rows);
   }
 
+  /**
+   * Parses the csv file based on the csv text
+   * @param csvText the csv data
+   * @returns an array of arrays
+   */
+  // eslint-disable-next-line class-methods-use-this
   private parseCSV(csvText: string): string[][] {
     return csvText
       .trim()
@@ -36,6 +42,12 @@ export default class DataReader {
       .map(row => row.split(',').map(cell => cell.trim()));
   }
 
+  /**
+   * Transform observations to fields
+   * @param rows the raw fields
+   * @returns the generated fields
+   */
+  // eslint-disable-next-line class-methods-use-this
   private parseField(rows: string[][]): Field[] {
     const fieldObservationsMap: Map<string, Observation[]> = new Map();
 
