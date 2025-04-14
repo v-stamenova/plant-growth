@@ -39,7 +39,7 @@ export default class Plot {
    * @param canvas the canvas
    */
   public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, '#421010', '#421010');
+    CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, 'rgb(66, 16, 16)', 'rgb(71, 46, 26)');
     this.plant.render(canvas);
   }
 

@@ -37,10 +37,11 @@ export default class Field {
   ) {
     this.column = observations[0]?.getColumn() ?? 0;
     this.row = observations[0]?.getRow() ?? 0;
-    this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
-    this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
-    this.posX = this.column * (this.width + 20) + 50;
-    this.posY = this.row * (this.height + window.innerHeight * 0.06) + window.innerHeight * 0.2;
+    // this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
+    this.width = plantMaxRadius * 2 * 2 + (plantMaxRadius * 0.5);
+    this.height = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
+    this.posX = this.column * (this.width * 2.3) + this.width * 0.5;
+    this.posY = this.row * (this.height + window.innerHeight * 0.01) + window.innerHeight * 0.2;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
@@ -62,11 +63,11 @@ export default class Field {
 
     while (index < 8) {
       this.plots.push(new Plot(centerX, centerY, this.plantMaxRadius, observations, flowerId));
-      centerX += this.plantMaxRadius * 2.1;
+      centerY += this.plantMaxRadius * 2.1;
 
-      if(index == 3){
-        centerX = this.posX + this.plantMaxRadius * 1.3;
-        centerY += this.plantMaxRadius * 2.1;
+      if (index == 3) {
+        centerY = this.posY + this.plantMaxRadius * 1.2;
+        centerX += this.plantMaxRadius * 2.1;
       }
 
       index += 1;
@@ -155,13 +156,13 @@ export default class Field {
   /**
    * Renders the field
    * @param canvas the canvas
-   */
-  public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, 'rgb(109, 81, 40)', 1, 10);
+  */
+ public render(canvas: HTMLCanvasElement): void {
+    CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'rgba(128, 99, 56, 0.77)', 'rgba(109, 81, 40, 0.36)');
     this.plots.forEach((plot: Plot) => plot.render(canvas));
     CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY - 40, 'center', 'system-ui', 15, 'white');
     if (this.hover) {
-      CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', 0.6, 10);
+      CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', 0.6, 0);
     }
   }
 

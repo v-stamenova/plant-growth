@@ -78,6 +78,7 @@ export default class BaseGame extends Game {
     this.dateSlider.processInput(this.mouseListener, opened);
 
     let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
+
     const cameraSpeed: number = 15;
     if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyS')) {
       ySpeed -= cameraSpeed;
@@ -168,10 +169,13 @@ export default class BaseGame extends Game {
    */
   public render(): void {
     CanvasRenderer.clearCanvas(this.canvas);
-    CanvasRenderer.fillRectangle(this.canvas, 0, 0, this.canvas.width, this.canvas.height, 'rgb(131, 103, 60)', 1, 10);
+    CanvasRenderer.fillRectangle(this.canvas, 0, 0, this.canvas.width, this.canvas.height, 'rgb(131, 103, 60)', 1, 0);
     this.fields.forEach((field: Field) => {
       if (field.getRow() == 0) {
-        // CanvasRenderer.fillRectangle(this.canvas, field.getPosition()?.[0] ?? 0, window.innerHeight * 0.1, field.getDimensions()?.[0] ?? 0, window.innerHeight, 'rgb(119, 90, 49)', 1, 10);
+        CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
+        CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 30, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
+        CanvasRenderer.fillRectangle(this.canvas, (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, field.getDimensions()[0] ?? 0, window.innerHeight, 'rgb(255, 178, 12)', 0.1, 0);
+        CanvasRenderer.fillRectangle(this.canvas, -20 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(255, 255, 255)', 0.1, 0);
       }
     });
     this.fields.forEach((field: Field) => field.render(this.canvas));
@@ -199,7 +203,7 @@ export default class BaseGame extends Game {
       0
     );
 
-    CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 100, 'center', 'sans-serif', 30, 'white', true);
+    CanvasRenderer.writeText(this.canvas, this.currentDate, this.canvas.width * 0.4 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 100, 'center', 'sans-serif', 30, 'white', true);
     CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'right', 'system-ui', 20, 'white', true);
     CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'left', 'system-ui', 20, 'white', true);
     this.dateSlider.render(this.canvas, opened);
