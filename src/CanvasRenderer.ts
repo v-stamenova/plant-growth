@@ -303,6 +303,7 @@ export default class CanvasRenderer {
    */
   public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1, lineWidth: number = 1): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.save();
     ctx.beginPath();
     ctx.lineWidth = lineWidth;
 
@@ -313,6 +314,7 @@ export default class CanvasRenderer {
     ctx.lineTo(x2, y2);
 
     ctx.stroke();
+    ctx.restore();
   }
 
   /**
@@ -355,11 +357,30 @@ export default class CanvasRenderer {
     width: number,
     height: number,
     color: string = 'red',
+    opacity: number = 1,
+    borderRadius: number = 0,
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.save();
+    ctx.globalAlpha = opacity;
     ctx.beginPath();
+
+    if (borderRadius > 0) {
+      ctx.moveTo(dx + borderRadius, dy);
+      ctx.lineTo(dx + width - borderRadius, dy);
+      ctx.arcTo(dx + width, dy, dx + width, dy + borderRadius, borderRadius);
+      ctx.lineTo(dx + width, dy + height - borderRadius);
+      ctx.arcTo(dx + width, dy + height, dx + width - borderRadius, dy + height, borderRadius);
+      ctx.lineTo(dx + borderRadius, dy + height);
+      ctx.arcTo(dx, dy + height, dx, dy + height - borderRadius, borderRadius);
+      ctx.lineTo(dx, dy + borderRadius);
+      ctx.arcTo(dx, dy, dx + borderRadius, dy, borderRadius);
+    } else {
+      ctx.rect(dx, dy, width, height);
+    }
+
     ctx.fillStyle = color;
-    ctx.rect(dx, dy, width, height);
     ctx.fill();
+    ctx.restore();
   }
 }

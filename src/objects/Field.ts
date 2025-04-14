@@ -39,8 +39,8 @@ export default class Field {
     this.row = observations[0]?.getRow() ?? 0;
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
     this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
-    this.posX = this.column * (this.width + 50) + 50;
-    this.posY = this.row * (this.height + window.innerHeight * 0.04) + window.innerHeight * 0.13;
+    this.posX = this.column * (this.width + 20) + 50;
+    this.posY = this.row * (this.height + window.innerHeight * 0.06) + window.innerHeight * 0.2;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
@@ -120,7 +120,7 @@ export default class Field {
    */
   public renderInfoPanel(canvas: HTMLCanvasElement, dateIndex: number): void {
     if (this.plots[0]) {
-      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 'red', 0.3);
+      CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 0.3, 10);
 
       CanvasRenderer.drawRectangle(canvas, canvas.width * 0.75, 0, canvas.width * 0.3, canvas.height, '#525252', '#000000', 0.9);
       CanvasRenderer.fillRectangleWithGradient(
@@ -132,14 +132,14 @@ export default class Field {
         180,
       );
 
-      const radius: number = Math.min(canvas.width, canvas.height) * 0.11;
+      const radius: number = Math.min(canvas.width, canvas.height) * 0.08;
       CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, radius, '#421010', '#421010');
       const scaleFactor: number = radius / (this.plantMaxRadius);
       this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, scaleFactor);
 
       CanvasRenderer.writeText(canvas, 'Variety: placeholder', canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white', true, 1000);
       CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey', true, 1000);
-      CanvasRenderer.drawLine(canvas, canvas.width * 0.8, canvas.height * 0.4, canvas.width * 0.95, canvas.height * 0.4, 'white', 0.8, 6);
+      CanvasRenderer.drawLine(canvas, canvas.width * 0.775, canvas.height * 0.4, canvas.width * 0.975, canvas.height * 0.4, 'white', 0.8, 1);
 
       // the actual 'stats' of the plant.
       // since there are 8 plants on a plot, stats from the first is taken
@@ -157,11 +157,11 @@ export default class Field {
    * @param canvas the canvas
    */
   public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404');
+    CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, 'rgb(109, 81, 40)', 1, 10);
     this.plots.forEach((plot: Plot) => plot.render(canvas));
-    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY + 20, 'center');
+    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY - 40, 'center', 'system-ui', 15, 'white');
     if (this.hover) {
-      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404', 0.3);
+      CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', 0.6, 10);
     }
   }
 

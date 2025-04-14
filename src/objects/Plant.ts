@@ -52,7 +52,7 @@ export default class Plant {
     if (this.observations[this.index] != null) {
       const imageIndex: number = this.ndviRange(this.observations[0]!.getNDVI());
       this.image = this.loadedImages[imageIndex] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png');
-      this.width = this.plotRadius * 3 * (this.observations[0]!.getCoverage() / 100);
+      this.width = this.plotRadius * 5 * (this.observations[0]!.getCoverage() / 100);
     } else {
       this.image = CanvasRenderer.loadNewImage('../../img/plant-green.png');
       this.width = 50;
@@ -91,7 +91,7 @@ export default class Plant {
    */
   public update(elapsed: number, dateIndex: number): boolean {
     if (dateIndex < this.observations.length && this.observations[dateIndex]) {
-      this.width = this.plotRadius * 3 * (this.observations[dateIndex]!.getCoverage() / 100);
+      this.width = this.plotRadius * 5 * (this.observations[dateIndex]!.getCoverage() / 100);
       this.updateImage(dateIndex);
 
       this.isFlowerVisible = false;
@@ -141,7 +141,7 @@ export default class Plant {
       this.width * scale,
       this.rotation
     );
-  
+
     if (this.isFlowerVisible) {
       CanvasRenderer.drawImageDimensionsRotation(
         canvas,
