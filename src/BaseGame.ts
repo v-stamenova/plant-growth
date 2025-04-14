@@ -3,10 +3,8 @@ import Game from './Game.js';
 import CanvasRenderer from './CanvasRenderer.js';
 import KeyListener from './KeyListener.js';
 import MouseListener from './MouseListener.js';
-import Plot from './objects/Plot.js';
 import Field from './objects/Field.js';
 import DataReader from './helpers/DataReader.js';
-import Observation from './objects/Observation.js';
 import Slider from './objects/Slider.js';
 
 export default class BaseGame extends Game {
@@ -39,18 +37,26 @@ export default class BaseGame extends Game {
     this.dateSlider = new Slider(0, 0, 0);
 
 
-    this.reader = new DataReader('../data/rilland_2022.csv');
+    this.reader = new DataReader('../data/rilland_2023_dap.csv');
     this.reader.load()
       .then((data: Field[]) => {
         this.fields = data;
         this.currentDate = this.fields[0]?.getDate() ?? '';
         this.dates = this.fields[0]?.getDates() ?? [];
-
+      
         // here, the 0.3 stands for 30% for the canvas.
         // as in, canvas.width * 0.3 is done in the class to render
         // this is done because the canvas dimensions can change, and if they are initialised
         // at posX = canvas.width * 0.3, it wont change if the canvas size changes
-        this.dateSlider = new Slider(0.2, 0.025, 0.37, 0, this.dates.length - 1, 0, 0);
+        this.dateSlider = new Slider(
+          0.2, 
+          0.025, 
+          0.37, 
+          0, 
+          this.dates.length - 1, 
+          0, 
+          0
+        );
 
         console.log('CSV Data:', data);
       })
@@ -145,8 +151,9 @@ export default class BaseGame extends Game {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
-    this.fields.forEach((field: Field) => field.update(elapsed, this.dateSlider.activeValue));
-    this.currentDate = this.dates[this.dateSlider.activeValue] ?? '';
+    this.fields.forEach((field: Field) => field.update(elapsed, this.dateSlider.getActiveValue()));
+    this.currentDate = this.dates[this.dateSlider.getActiveValue()] ?? '';
+
     return true;
   }
 
@@ -156,14 +163,15 @@ export default class BaseGame extends Game {
   public render(): void {
     CanvasRenderer.clearCanvas(this.canvas);
     this.fields.forEach((field: Field) => field.render(this.canvas));
+    CanvasRenderer.drawRectangle(this.canvas, 0, 0, this.canvas.width, 60, 'white', 'white');
     this.fields.forEach((field: Field) => {
       if (field.openInfoPanel) {
-        field.renderInfoPanel(this.canvas, this.dateSlider.activeValue);
+        field.renderInfoPanel(this.canvas, this.dateSlider.getActiveValue());
       }
     });
-    this.dateSlider.render(this.canvas);
     CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4, 100, 'center', 'sans-serif', 30, 'black', true);
     CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17, 55, 'right', 'system-ui', 20, 'black', true);
     CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6, 55, 'left', 'system-ui', 20, 'black', true)
+    this.dateSlider.render(this.canvas);
   }
 }
