@@ -43,16 +43,19 @@ export default class BaseGame extends Game {
         this.fields = data;
         this.currentDate = this.fields[0]?.getDate() ?? '';
         this.dates = this.fields[0]?.getDates() ?? [];
+      
+        // here, the 0.3 stands for 30% for the canvas.
+        // as in, canvas.width * 0.3 is done in the class to render
+        // this is done because the canvas dimensions can change, and if they are initialised
+        // at posX = canvas.width * 0.3, it wont change if the canvas size changes
         this.dateSlider = new Slider(
-          window.innerWidth * 0.3,
-          window.innerHeight * 0.025,
-          window.innerWidth * 0.2,
-          0,
-          this.dates.length - 1,
-          0,
-          0,
-          this.dates[0],
-          this.dates[this.dates.length - 1]
+          0.2, 
+          0.025, 
+          0.37, 
+          0, 
+          this.dates.length - 1, 
+          0, 
+          0
         );
 
         console.log('CSV Data:', data);
@@ -105,7 +108,7 @@ export default class BaseGame extends Game {
     if ((minPosX ?? 0) >= (fieldWidth ?? 0) / 2) {
       xSpeed -= cameraSpeed;
     }
-    if ((minPosY ?? 0) >= (fieldHeight ?? 0)) {
+    if ((minPosY ?? 0) >= (fieldHeight ?? 0) * 1.5) {
       ySpeed -= cameraSpeed;
     }
 
@@ -145,8 +148,12 @@ export default class BaseGame extends Game {
    * @returns true if the game should continue
    */
   public update(elapsed: number): boolean {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+
     this.fields.forEach((field: Field) => field.update(elapsed, this.dateSlider.getActiveValue()));
     this.currentDate = this.dates[this.dateSlider.getActiveValue()] ?? '';
+
     return true;
   }
 
@@ -162,7 +169,9 @@ export default class BaseGame extends Game {
         field.renderInfoPanel(this.canvas, this.dateSlider.getActiveValue());
       }
     });
-    CanvasRenderer.writeText(this.canvas, this.currentDate, 20, 45, 'left', 'sans-serif', 40, 'blue');
+    CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4, 100, 'center', 'sans-serif', 30, 'black', true);
+    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17, 55, 'right', 'system-ui', 20, 'black', true);
+    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6, 55, 'left', 'system-ui', 20, 'black', true)
     this.dateSlider.render(this.canvas);
   }
 }

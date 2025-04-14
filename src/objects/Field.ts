@@ -40,7 +40,7 @@ export default class Field {
     this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
     this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
     this.posX = this.column * (this.width + 50) + 50;
-    this.posY = this.row * (this.height + 50) + 70;
+    this.posY = this.row * (this.height + window.innerHeight * 0.04) + window.innerHeight * 0.13;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
@@ -131,8 +131,12 @@ export default class Field {
         ],
         180,
       );
-      CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, canvas.height * 0.105, '#421010', '#421010');
-      this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, 5);
+      
+      const radius: number = Math.min(canvas.width, canvas.height) * 0.11;
+      CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, radius, '#421010', '#421010');
+      const scaleFactor: number = radius / (this.plantMaxRadius);
+      this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, scaleFactor);
+
       CanvasRenderer.writeText(canvas, 'Variety: placeholder', canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white');
       CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey');
       CanvasRenderer.drawLine(canvas, canvas.width * 0.8, canvas.height * 0.4, canvas.width * 0.95, canvas.height * 0.4, 'white', 0.8, 6);
@@ -140,11 +144,11 @@ export default class Field {
       // the actual 'stats' of the plant.
       // since there are 8 plants on a plot, stats from the first is taken
       // (yes, they are the same anyways)
-      CanvasRenderer.writeText(canvas, 'NDVI:', canvas.width * 0.8, canvas.height * 0.5, 'left', 'system-ui', 20, 'lightgrey');
-      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getNDVI() ?? 0).toFixed(3))}`, canvas.width * 0.95, canvas.height * 0.5, 'right', 'system-ui', 20, 'lightgrey');
-      CanvasRenderer.writeText(canvas, 'Cover%:', canvas.width * 0.8, canvas.height * 0.55, 'left', 'system-ui', 20, 'lightgrey');
-      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getCoverage() ?? 0).toFixed(3))}%`, canvas.width * 0.95, canvas.height * 0.55, 'right', 'system-ui', 20, 'lightgrey');
-      CanvasRenderer.writeText(canvas, 'More info to come', canvas.width * 0.875, canvas.height * 0.6, 'center', 'system-ui', 18, 'lightgrey');
+      CanvasRenderer.writeText(canvas, 'NDVI:', canvas.width * 0.8, canvas.height * 0.5, 'left', 'system-ui', 20, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getNDVI() ?? 0).toFixed(3))}`, canvas.width * 0.95, canvas.height * 0.5, 'right', 'system-ui', 20, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, 'Cover%:', canvas.width * 0.8, canvas.height * 0.55, 'left', 'system-ui', 20, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getCoverage() ?? 0).toFixed(3))}%`, canvas.width * 0.95, canvas.height * 0.55, 'right', 'system-ui', 20, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, 'More info to come', canvas.width * 0.875, canvas.height * 0.6, 'center', 'system-ui', 18, 'lightgrey', true, 1000);
     }
   }
 
