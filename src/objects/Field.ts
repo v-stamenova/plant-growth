@@ -11,11 +11,11 @@ export default class Field {
   private column: number;
 
   private row: number;
-  
+
   private width: number;
 
   private height: number;
-  
+
   private plantMaxRadius: number;
 
   private plots: Plot[];
@@ -131,14 +131,14 @@ export default class Field {
         ],
         180,
       );
-      
+
       const radius: number = Math.min(canvas.width, canvas.height) * 0.11;
       CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, radius, '#421010', '#421010');
       const scaleFactor: number = radius / (this.plantMaxRadius);
       this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, scaleFactor);
 
-      CanvasRenderer.writeText(canvas, 'Variety: placeholder', canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white');
-      CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey');
+      CanvasRenderer.writeText(canvas, 'Variety: placeholder', canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white', true, 1000);
+      CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey', true, 1000);
       CanvasRenderer.drawLine(canvas, canvas.width * 0.8, canvas.height * 0.4, canvas.width * 0.95, canvas.height * 0.4, 'white', 0.8, 6);
 
       // the actual 'stats' of the plant.

@@ -301,9 +301,10 @@ export default class CanvasRenderer {
    * @param opacity the opacity of the line
    * @param lineWidth the width of the line
    */
-  public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1): void {
+  public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1, lineWidth: number = 1): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.beginPath();
+    ctx.lineWidth = lineWidth;
 
     ctx.globalAlpha = opacity;
     ctx.strokeStyle = color;
