@@ -7,6 +7,7 @@
 
 export default class CanvasRenderer {
   /**
+   * Retrieving the canvas context
    * @param canvas the canvas on which will be drawn
    * @returns the 2D rendering context of the canvas
    */
@@ -46,7 +47,7 @@ export default class CanvasRenderer {
   }
 
   /**
-   *
+   * Drawing the image on the canvas
    * @param canvas that canvas that it should be drawn on
    * @param image the image to be drawn
    * @param dx x-coordinate
@@ -64,12 +65,12 @@ export default class CanvasRenderer {
 
   /**
    * Drawing an image with dimensions
-   * @param canvas
-   * @param image
-   * @param dx
-   * @param dy
-   * @param dw
-   * @param dh
+   * @param canvas - The canvas element.
+   * @param image - The image element to draw.
+   * @param dx - The x-coordinate of where the image is drawn.
+   * @param dy - The y-coordinate of where the image is drawn.
+   * @param dw - The width of the drawn image.
+   * @param dh - The height of the drawn image.
    */
   public static drawImageDimensions(
     canvas: HTMLCanvasElement,
@@ -122,7 +123,7 @@ export default class CanvasRenderer {
   }
 
   /**
-   *
+   * Writing text on the canvas
    * @param canvas Canvas to write to
    * @param text Text to write
    * @param xCoordinate x-coordinate of the text
@@ -180,63 +181,6 @@ export default class CanvasRenderer {
     ctx.stroke();
   }
 
-  public static drawIrregularPlantishShape(
-    canvas: HTMLCanvasElement,
-    centerX: number,
-    centerY: number,
-    radius: number,
-    hue: number, // e.g., 120 for a greenish tone,
-    asc: boolean
-  ): void {
-    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
-    ctx.beginPath();
-
-    const numPoints = 30;                // More points yield a smoother but irregular shape
-    const variation = 0.15 * radius;       // Adjust the variation factor for more/less irregularity
-
-    for (let i = 0; i < numPoints; i++) {
-      const angle = (i / numPoints) * 2 * Math.PI;
-      // Randomize the radius for each point around the circle
-      const randomRadius = radius + (Math.random() - 0.5) * variation * 2;
-      const x = centerX + randomRadius * Math.cos(angle);
-      const y = centerY + randomRadius * Math.sin(angle);
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-    }
-
-    ctx.closePath();
-
-    // Create a radial gradient using HSL colors based on the given hue.
-    // Here, the saturation is fixed at 70%, while lightness varies to create depth.
-    const gradient = ctx.createRadialGradient(
-      centerX, centerY, radius * 0.1,
-      centerX, centerY, radius
-    );
-
-    // Inner color is lighter, mid is base, outer is darker.
-
-    if (asc) {
-      gradient.addColorStop(0, `hsl(120, 70%, ${hue}%)`);
-      gradient.addColorStop(0.5, `hsl(120, 70%, ${hue}%)`);
-      gradient.addColorStop(1, `hsl(120, 70%, ${hue}%)`);
-    } else {
-      gradient.addColorStop(0, `hsl(${hue}, 70%, 50%)`);
-      gradient.addColorStop(0.5, `hsl(${hue}, 70%, 50%)`);
-      gradient.addColorStop(1, `hsl(${hue}, 70%, 50%)`);
-    }
-
-    ctx.fillStyle = gradient;
-    // Use a slightly darker outline to maintain consistency.
-    ctx.strokeStyle = `hsl(${hue}, 70%, 35%)`;
-    ctx.fill();
-    ctx.stroke();
-  }
-
-
-
   /**
    * Draw a rectangle outline to the canvas
    *
@@ -283,11 +227,27 @@ export default class CanvasRenderer {
    * @param dy the y-coordinate of the rectangle's left left corner
    * @param width the width of the rectangle from x to the right
    * @param height the height of the rectrangle from y downwards
-   * @param colors an array of color stops for the gradient, each color is an object with properties `color` and `stop`
+   * @param colors an array of color stops for the gradient,
+   * each color is an object with properties `color` and `stop`
    * @param angle the angle of the gradient in degrees (not radians)
    * @param borderRadius the border radius of the rectangle
    */
-  public static fillRectangleWithGradient(canvas: HTMLCanvasElement, dx: number, dy: number, width: number, height: number, colors: { red: number; green: number; blue: number; opacity: number; stop: number }[], angle: number = 0, borderRadius: number = 0): void {
+  public static fillRectangleWithGradient(
+    canvas: HTMLCanvasElement,
+    dx: number,
+    dy: number,
+    width: number,
+    height: number,
+    colors: {
+      red: number;
+      green: number;
+      blue: number;
+      opacity: number;
+      stop: number;
+    }[],
+    angle: number = 0,
+    borderRadius: number = 0
+  ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.beginPath();
 
@@ -334,7 +294,7 @@ export default class CanvasRenderer {
    * @param opacity the opacity of the line
    * @param lineWidth the width of the line
    */
-  public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1, lineWidth: number = 1): void {
+  public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     ctx.beginPath();
 

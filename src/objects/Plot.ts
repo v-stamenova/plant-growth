@@ -11,17 +11,33 @@ export default class Plot {
 
   public plant: Plant;
 
-  public constructor(centerX: number, centerY: number, radius: number, observations: Observation[]){
+  public constructor(
+    centerX: number,
+    centerY: number,
+    radius: number,
+    observations: Observation[],
+    flowerId: number
+  ){
     this.centerX = centerX;
     this.centerY = centerY;
     this.radius = radius;
-    this.plant = new Plant(this.centerX, this.centerY, this.radius, observations);
+    this.plant = new Plant(this.centerX, this.centerY, this.radius, observations, flowerId);
   }
 
+  /**
+   * Updates the plots
+   * @param elapsed the elapsed time
+   * @param dateIndex the current date index
+   * @returns if the plots continues to update
+   */
   public update(elapsed: number, dateIndex: number): boolean {
     return this.plant.update(elapsed, dateIndex);
   }
 
+  /**
+   * Renders the plot
+   * @param canvas the canvas
+   */
   public render(canvas: HTMLCanvasElement): void {
     CanvasRenderer.drawCircle(canvas, this.centerX, this.centerY, this.radius, '#421010', '#421010');
     this.plant.render(canvas);
