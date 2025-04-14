@@ -141,13 +141,13 @@ export default class CanvasRenderer {
     fontFamily: string = 'sans-serif',
     baseFontSize: number = 20,
     color: string = 'red',
-    responsize: boolean = false,
+    responsive: boolean = false,
     shrinkThreshold: number = 500
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
     let fontSize: number = baseFontSize;
 
-    if (responsize) {
+    if (responsive) {
       fontSize = canvas.width < shrinkThreshold ? (canvas.width / shrinkThreshold) * baseFontSize : baseFontSize;
     }
     ctx.font = `${fontSize}px ${fontFamily}`;
