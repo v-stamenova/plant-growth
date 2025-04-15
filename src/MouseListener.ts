@@ -24,10 +24,6 @@ export default class MouseListener {
 
   private buttonUp: Record<number, boolean> = {};
 
-  public prevMousePos: { x: number; y: number } | null = null;
-
-  public canvasOffset: { x: number; y: number } = { x: 0, y: 0 };
-
 
   /**
    *
