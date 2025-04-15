@@ -54,6 +54,7 @@ export default class DataReader {
     for (const row of rows) {
       const fieldNumber: string | undefined = row[3];
       const observation = new Observation(
+        row[0]!,
         row[5]!,
         Number.parseFloat(row[7]!),
         Number.parseFloat(row[8]!),
@@ -84,7 +85,7 @@ export default class DataReader {
           Math.round(field.getRow()) === row && Math.round(field.getColumn()) === column
         );
         if (!isFieldPresent) {
-          const observation = new Observation('', 0, 0, column, row, 0, 0);
+          const observation = new Observation('', '', 0, 0, column, row, 0, 0);
           fields.push(new Field(`23 R ${134 - row}-${101 + column * 2}`, 100, 100, 20, [observation]));
         }
       }

@@ -1,4 +1,6 @@
 export default class Observation {
+  private variety: string;
+
   private date: string;
 
   private coverage: number;
@@ -10,10 +12,11 @@ export default class Observation {
   private row: number;
 
   private ndvi: number;
-    
+
   private dap: number;
 
   public constructor(
+    variety: string,
     date: string,
     coverage: number,
     height: number,
@@ -22,6 +25,7 @@ export default class Observation {
     ndvi: number,
     dap: number
   ) {
+    this.variety = variety;
     this.date = date;
     this.column = column;
     this.row = row;
@@ -29,6 +33,10 @@ export default class Observation {
     this.height = height;
     this.ndvi = ndvi;
     this.dap = dap;
+  }
+
+  public getVariety(): string {
+    return this.variety;
   }
 
   public getDate(): string {

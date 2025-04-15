@@ -100,8 +100,18 @@ export default class Plant {
       // by changing it to coverage and playing around with the values
       // i got something that looks a bit better
       this.isFlowerVisible = false;
-      if (this.observations[dateIndex]!.getCoverage() > 99
-      && this.observations[dateIndex]!.getCoverage() <= 100) {
+
+      const coverage: number = this.observations[dateIndex]!.getCoverage();
+      const ndvi: number = this.observations[dateIndex]!.getNDVI();
+      const daysAfterPlanting: number = this.observations[dateIndex]!.getDAP(); // Assuming dateIndex represents days after planting
+
+      // Flower becomes visible when coverage is high, NDVI is optimal, and enough days have passed
+      if (
+        coverage > 99 &&
+        ndvi > 0.89 &&
+        ndvi <= 0.98 &&
+        daysAfterPlanting >= 60 // Assuming flowers appear after 30 days
+      ) {
         this.isFlowerVisible = true;
       }
     }

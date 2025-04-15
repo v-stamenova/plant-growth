@@ -158,6 +158,38 @@ export default class CanvasRenderer {
   }
 
   /**
+   * Draw and fill a polygon on the canvas
+   *
+   * @param canvas the canvas to draw to
+   * @param points an array of points where each point is an object with x and y properties
+   * @param color the fill color of the polygon
+   */
+  public static fillPolygon(
+    canvas: HTMLCanvasElement,
+    points: { x: number; y: number }[],
+    color: string = 'red',
+  ): void {
+    if (points.length < 3) {
+      throw new Error('A polygon must have at least 3 points');
+    }
+
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+    if (points[0]) {
+      ctx.moveTo(points[0].x, points[0].y);
+    }
+
+    for (let i: number = 1; i < points.length; i++) {
+      const point: {x: number, y: number} = points[i] ?? { x: 0, y: 0 };
+      ctx.lineTo(point.x, point.y);
+    }
+
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  /**
    * Draw a circle outline on the canvas
    *
    * @param canvas the canvas to draw to

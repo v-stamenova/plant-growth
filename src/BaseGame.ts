@@ -174,13 +174,13 @@ export default class BaseGame extends Game {
     // renders the vertical lines for the fields
     this.fields.forEach((field: Field) => {
       if (field.getRow() == 0) {
-        CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
+        // CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
         CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 30, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
         CanvasRenderer.fillRectangle(this.canvas, (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, field.getDimensions()[0] ?? 0, window.innerHeight, 'rgb(255, 178, 12)', 0.1, 0);
         CanvasRenderer.fillRectangle(this.canvas, -20 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(255, 255, 255)', 0.1, 0);
       }
     });
-    this.fields.forEach((field: Field) => field.render(this.canvas));
+    this.fields.forEach((field: Field) => field.render(this.canvas, this.dateSlider.getActiveValue()));
     CanvasRenderer.drawRectangle(this.canvas, 0, 0, this.canvas.width, 60, 'white', 'white');
 
     let opened: boolean = false;
