@@ -52,7 +52,7 @@ export default class Plant {
     if (this.observations[this.index] != null) {
       const imageIndex: number = this.ndviRange(this.observations[0]!.getNDVI());
       this.image = this.loadedImages[imageIndex] ?? CanvasRenderer.loadNewImage('../../img/plant-green.png');
-      this.width = this.plotRadius * 3 * (this.observations[0]!.getCoverage() / 100);
+      this.width = this.plotRadius * 5 * (this.observations[0]!.getCoverage() / 100);
     } else {
       this.image = CanvasRenderer.loadNewImage('../../img/plant-green.png');
       this.width = 50;
@@ -91,12 +91,27 @@ export default class Plant {
    */
   public update(elapsed: number, dateIndex: number): boolean {
     if (dateIndex < this.observations.length && this.observations[dateIndex]) {
-      this.width = this.plotRadius * 3 * (this.observations[dateIndex]!.getCoverage() / 100);
+      this.width = this.plotRadius * 5 * (this.observations[dateIndex]!.getCoverage() / 100);
       this.updateImage(dateIndex);
 
+      // originally this was days after planting
+      // since this is the same for all tubers, they all got flowers at the same time
+      // which didn't look too natural
+      // by changing it to coverage and playing around with the values
+      // i got something that looks a bit better
       this.isFlowerVisible = false;
-      if (this.observations[dateIndex]!.getDAP() > 50
-      && this.observations[dateIndex]!.getDAP() < 70) {
+
+      const coverage: number = this.observations[dateIndex]!.getCoverage();
+      const ndvi: number = this.observations[dateIndex]!.getNDVI();
+      const daysAfterPlanting: number = this.observations[dateIndex]!.getDAP();
+      const height: number = this.observations[dateIndex]!.getHeight();
+
+      if (
+        coverage > 95 &&
+        ndvi > 0.8 &&
+        height > 0.6 &&
+        daysAfterPlanting >= 50 && daysAfterPlanting <= 80
+      ) {
         this.isFlowerVisible = true;
       }
     }
@@ -141,15 +156,15 @@ export default class Plant {
       this.width * scale,
       this.rotation
     );
-  
+
     if (this.isFlowerVisible) {
       CanvasRenderer.drawImageDimensionsRotation(
         canvas,
         this.flower,
-        this.centerX - this.width * 0.5,
-        this.centerY - this.width * 0.5,
-        this.width,
-        this.width,
+        posX - (this.width * scale) * 0.5,
+        posY - (this.width * scale) * 0.5,
+        this.width * scale,
+        this.width * scale,
         this.rotation
       );
     }

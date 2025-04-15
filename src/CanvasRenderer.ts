@@ -158,6 +158,38 @@ export default class CanvasRenderer {
   }
 
   /**
+   * Draw and fill a polygon on the canvas
+   *
+   * @param canvas the canvas to draw to
+   * @param points an array of points where each point is an object with x and y properties
+   * @param color the fill color of the polygon
+   */
+  public static fillPolygon(
+    canvas: HTMLCanvasElement,
+    points: { x: number; y: number }[],
+    color: string = 'red',
+  ): void {
+    if (points.length < 3) {
+      throw new Error('A polygon must have at least 3 points');
+    }
+
+    const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.beginPath();
+    if (points[0]) {
+      ctx.moveTo(points[0].x, points[0].y);
+    }
+
+    for (let i: number = 1; i < points.length; i++) {
+      const point: {x: number, y: number} = points[i] ?? { x: 0, y: 0 };
+      ctx.lineTo(point.x, point.y);
+    }
+
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  /**
    * Draw a circle outline on the canvas
    *
    * @param canvas the canvas to draw to
@@ -303,6 +335,7 @@ export default class CanvasRenderer {
    */
   public static drawLine(canvas: HTMLCanvasElement, x1: number, y1: number, x2: number, y2: number, color: string='black', opacity: number = 1, lineWidth: number = 1): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.save();
     ctx.beginPath();
     ctx.lineWidth = lineWidth;
 
@@ -313,6 +346,7 @@ export default class CanvasRenderer {
     ctx.lineTo(x2, y2);
 
     ctx.stroke();
+    ctx.restore();
   }
 
   /**
@@ -355,11 +389,30 @@ export default class CanvasRenderer {
     width: number,
     height: number,
     color: string = 'red',
+    opacity: number = 1,
+    borderRadius: number = 0,
   ): void {
     const ctx: CanvasRenderingContext2D = CanvasRenderer.getCanvasContext(canvas);
+    ctx.save();
+    ctx.globalAlpha = opacity;
     ctx.beginPath();
+
+    if (borderRadius > 0) {
+      ctx.moveTo(dx + borderRadius, dy);
+      ctx.lineTo(dx + width - borderRadius, dy);
+      ctx.arcTo(dx + width, dy, dx + width, dy + borderRadius, borderRadius);
+      ctx.lineTo(dx + width, dy + height - borderRadius);
+      ctx.arcTo(dx + width, dy + height, dx + width - borderRadius, dy + height, borderRadius);
+      ctx.lineTo(dx + borderRadius, dy + height);
+      ctx.arcTo(dx, dy + height, dx, dy + height - borderRadius, borderRadius);
+      ctx.lineTo(dx, dy + borderRadius);
+      ctx.arcTo(dx, dy, dx + borderRadius, dy, borderRadius);
+    } else {
+      ctx.rect(dx, dy, width, height);
+    }
+
     ctx.fillStyle = color;
-    ctx.rect(dx, dy, width, height);
     ctx.fill();
+    ctx.restore();
   }
 }
