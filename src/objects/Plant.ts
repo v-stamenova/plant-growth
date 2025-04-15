@@ -103,14 +103,14 @@ export default class Plant {
 
       const coverage: number = this.observations[dateIndex]!.getCoverage();
       const ndvi: number = this.observations[dateIndex]!.getNDVI();
-      const daysAfterPlanting: number = this.observations[dateIndex]!.getDAP(); // Assuming dateIndex represents days after planting
+      const daysAfterPlanting: number = this.observations[dateIndex]!.getDAP();
+      const height: number = this.observations[dateIndex]!.getHeight();
 
-      // Flower becomes visible when coverage is high, NDVI is optimal, and enough days have passed
       if (
-        coverage > 99 &&
-        ndvi > 0.89 &&
-        ndvi <= 0.98 &&
-        daysAfterPlanting >= 60 // Assuming flowers appear after 30 days
+        coverage > 95 &&
+        ndvi > 0.8 &&
+        height > 0.6 &&
+        daysAfterPlanting >= 50 && daysAfterPlanting <= 80
       ) {
         this.isFlowerVisible = true;
       }

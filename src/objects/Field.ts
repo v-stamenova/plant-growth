@@ -162,7 +162,8 @@ export default class Field {
   public render(canvas: HTMLCanvasElement, dateIndex: number): void {
     CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'rgba(128, 99, 56, 0.77)', 'rgba(109, 81, 40, 0.36)');
     this.plots.forEach((plot: Plot) => plot.render(canvas));
-    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY - 40, 'center', 'system-ui', 15, 'white');
+    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY - 40, 'center', 'system-ui', 15, 'lightgrey');
+    CanvasRenderer.writeText(canvas, this.plots[0]?.plant?.observations[dateIndex]?.getVariety() ?? '', (this.width / 2) + this.posX, this.height + this.posY - 10, 'center', 'system-ui', 15, 'white');
     if (this.hover) {
       CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', 0.6, 0);
     }
