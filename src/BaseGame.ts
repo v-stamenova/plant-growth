@@ -170,6 +170,8 @@ export default class BaseGame extends Game {
   public render(): void {
     CanvasRenderer.clearCanvas(this.canvas);
     CanvasRenderer.fillRectangle(this.canvas, 0, 0, this.canvas.width, this.canvas.height, 'rgb(131, 103, 60)', 1, 0);
+
+    // renders the vertical lines for the fields
     this.fields.forEach((field: Field) => {
       if (field.getRow() == 0) {
         CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
@@ -199,13 +201,24 @@ export default class BaseGame extends Game {
         { red: 5, green: 153, blue: 71, opacity: 1, stop: 0 },
         { red: 131, green: 103, blue: 60, opacity: 0, stop: 1 }
       ],
-      90, // vertical gradient: top (blue) to bottom (brown)
+      90, // vertical gradient: top (green) to bottom (brown)
       0
     );
+    const formatDate = (date: string): string =>
+      new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+      });
 
-    CanvasRenderer.writeText(this.canvas, this.currentDate, this.canvas.width * 0.4 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 100, 'center', 'sans-serif', 30, 'white', true);
-    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'right', 'system-ui', 20, 'white', true);
-    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'left', 'system-ui', 20, 'white', true);
+    const formattedCurrentDate: string = formatDate(this.currentDate);
+    const formattedStartDate: string = formatDate(this.dates[0] ?? '');
+    const formattedEndDate: string = formatDate(this.dates[this.dates.length - 1] ?? '');
+
+    CanvasRenderer.writeText(this.canvas, formattedCurrentDate, this.canvas.width * 0.4 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 100, 'center', 'sans-serif', 30, 'white', true);
+    CanvasRenderer.writeText(this.canvas, formattedStartDate, this.canvas.width * 0.17 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'right', 'system-ui', 20, 'white', true);
+    CanvasRenderer.writeText(this.canvas, formattedEndDate, this.canvas.width * 0.6 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'left', 'system-ui', 20, 'white', true);
     this.dateSlider.render(this.canvas, opened);
+    CanvasRenderer.fillCircle(this.canvas, this.canvas.width * 0, 0, 50, 'yellow');
   }
 }

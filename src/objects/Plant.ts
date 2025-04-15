@@ -94,9 +94,14 @@ export default class Plant {
       this.width = this.plotRadius * 5 * (this.observations[dateIndex]!.getCoverage() / 100);
       this.updateImage(dateIndex);
 
+      // originally this was days after planting
+      // since this is the same for all tubers, they all got flowers at the same time
+      // which didn't look too natural
+      // by changing it to coverage and playing around with the values
+      // i got something that looks a bit better
       this.isFlowerVisible = false;
-      if (this.observations[dateIndex]!.getDAP() > 50
-      && this.observations[dateIndex]!.getDAP() < 70) {
+      if (this.observations[dateIndex]!.getCoverage() > 99
+      && this.observations[dateIndex]!.getCoverage() <= 100) {
         this.isFlowerVisible = true;
       }
     }
@@ -146,10 +151,10 @@ export default class Plant {
       CanvasRenderer.drawImageDimensionsRotation(
         canvas,
         this.flower,
-        this.centerX - this.width * 0.5,
-        this.centerY - this.width * 0.5,
-        this.width,
-        this.width,
+        posX - (this.width * scale) * 0.5,
+        posY - (this.width * scale) * 0.5,
+        this.width * scale,
+        this.width * scale,
         this.rotation
       );
     }
