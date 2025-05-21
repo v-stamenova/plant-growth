@@ -121,7 +121,6 @@ export default class Field {
    */
   public renderInfoPanel(canvas: HTMLCanvasElement, dateIndex: number): void {
     if (this.plots[0] && this.plots[0]?.plant.observations[0] != undefined) {
-      console.log('opened')
       CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 0.3, 10);
 
       CanvasRenderer.drawRectangle(canvas, canvas.width * 0.75, 0, canvas.width * 0.3, canvas.height, '#525252', '#000000', 0.9);
