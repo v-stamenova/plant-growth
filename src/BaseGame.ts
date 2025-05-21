@@ -24,6 +24,8 @@ export default class BaseGame extends Game {
 
   private dateSlider: Slider;
 
+  private wasMouseDown: boolean = false;
+
   public constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
@@ -69,17 +71,30 @@ export default class BaseGame extends Game {
    * Process all input. Called from the GameLoop.
    */
   public processInput(): void {
+    // updates slider hitbox if infopanel is opened
     let opened: boolean = false;
     this.fields.forEach((field: Field) => {
-      if (field.openInfoPanel) {
+      if (field.openInfoPanel && field.getPlots()[0]?.plant.observations[0]) {
         opened = true;
       }
     });
     this.dateSlider.processInput(this.mouseListener, opened);
 
     let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
+    const cameraSpeed: number = 30;
 
-    const cameraSpeed: number = 15;
+    const mouseDown: boolean = this.mouseListener.isButtonDown(0);
+    if (mouseDown && !opened && !this.dateSlider.holding) {
+      if (!this.wasMouseDown) {
+        this.mouseListener.resetMouseDelta();
+      }
+      const delta: { x: number, y: number } = this.mouseListener.getMouseDelta();
+      xSpeed += delta.x;
+      ySpeed += delta.y;
+    }
+    this.wasMouseDown = mouseDown;
+
+
     if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyS')) {
       ySpeed -= cameraSpeed;
     }
@@ -127,7 +142,7 @@ export default class BaseGame extends Game {
     // turns off info panel for all fields except the one clicked
     // if anything else is clicked, it closes the info panel again
     this.fields.forEach((field: Field) => {
-      if (field.isHover(this.mouseListener)) {
+      if (field.isHover(this.mouseListener) && field.getPlots()[0]?.plant.observations[0]) {
         if (this.mouseListener.buttonPressed(0)) {
           if (field.openInfoPanel) {
             field.openInfoPanel = false;

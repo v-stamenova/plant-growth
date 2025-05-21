@@ -24,7 +24,6 @@ export default class MouseListener {
 
   private buttonUp: Record<number, boolean> = {};
 
-
   /**
    *
    * @param canvas the canvas element to which the relative coordinates should given
@@ -74,6 +73,27 @@ export default class MouseListener {
    */
   public isButtonUp(buttonCode: number = 0): boolean {
     return this.buttonUp[buttonCode] ?? false;
+  }
+
+  /**
+   * Returns the difference in mouse position since the last call to this method.
+   * The delta is (current - previous).
+   *
+   * @returns MouseCoordinates object with delta x and y
+   */
+  private lastMouseCoordinates: MouseCoordinates = { x: 0, y: 0 };
+
+  public getMouseDelta(): MouseCoordinates {
+    const delta: { x: number, y: number } = {
+      x: this.mouseCoordinates.x - this.lastMouseCoordinates.x,
+      y: this.mouseCoordinates.y - this.lastMouseCoordinates.y,
+    };
+    this.lastMouseCoordinates = { ...this.mouseCoordinates };
+    return delta;
+  }
+
+  public resetMouseDelta(): void {
+    this.lastMouseCoordinates = { ...this.mouseCoordinates };
   }
 
   /**
