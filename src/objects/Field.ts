@@ -37,10 +37,11 @@ export default class Field {
   ) {
     this.column = observations[0]?.getColumn() ?? 0;
     this.row = observations[0]?.getRow() ?? 0;
-    this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
-    this.height = plantMaxRadius * 2 * 2 + + (plantMaxRadius * 0.5);
-    this.posX = this.column * (this.width + 50) + 50;
-    this.posY = this.row * (this.height + window.innerHeight * 0.04) + window.innerHeight * 0.13;
+    // this.width = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
+    this.width = plantMaxRadius * 2 * 2 + (plantMaxRadius * 0.5);
+    this.height = plantMaxRadius * 2 * 4 + (plantMaxRadius * 0.9);
+    this.posX = this.column * (this.width * 2.3) + this.width * 0.5;
+    this.posY = this.row * (this.height + window.innerHeight * 0.01) + window.innerHeight * 0.2;
     this.plantMaxRadius = plantMaxRadius;
     this.plots = [];
     this.name = name;
@@ -62,11 +63,11 @@ export default class Field {
 
     while (index < 8) {
       this.plots.push(new Plot(centerX, centerY, this.plantMaxRadius, observations, flowerId));
-      centerX += this.plantMaxRadius * 2.1;
+      centerY += this.plantMaxRadius * 2.1;
 
-      if(index == 3){
-        centerX = this.posX + this.plantMaxRadius * 1.3;
-        centerY += this.plantMaxRadius * 2.1;
+      if (index == 3) {
+        centerY = this.posY + this.plantMaxRadius * 1.2;
+        centerX += this.plantMaxRadius * 2.1;
       }
 
       index += 1;
@@ -119,8 +120,9 @@ export default class Field {
    * @param dateIndex the current date index
    */
   public renderInfoPanel(canvas: HTMLCanvasElement, dateIndex: number): void {
-    if (this.plots[0]) {
-      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 'red', 0.3);
+    if (this.plots[0] && this.plots[0]?.plant.observations[0] != undefined) {
+      console.log('opened')
+      CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, 'red', 0.3, 10);
 
       CanvasRenderer.drawRectangle(canvas, canvas.width * 0.75, 0, canvas.width * 0.3, canvas.height, '#525252', '#000000', 0.9);
       CanvasRenderer.fillRectangleWithGradient(
@@ -132,14 +134,14 @@ export default class Field {
         180,
       );
 
-      const radius: number = Math.min(canvas.width, canvas.height) * 0.11;
+      const radius: number = Math.min(canvas.width, canvas.height) * 0.08;
       CanvasRenderer.drawCircle(canvas, canvas.width * 0.875, canvas.height * 0.2, radius, '#421010', '#421010');
       const scaleFactor: number = radius / (this.plantMaxRadius);
       this.plots[0].plant.render(canvas, canvas.width * 0.875, canvas.height * 0.2, scaleFactor);
 
-      CanvasRenderer.writeText(canvas, 'Variety: placeholder', canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white', true, 1000);
+      CanvasRenderer.writeText(canvas, `Variety: ${this.plots[0]?.plant?.observations[dateIndex]?.getVariety() ?? 0}`, canvas.width * 0.875, canvas.height * 0.35, 'center', 'system-ui', 25, 'white', true, 1000);
       CanvasRenderer.writeText(canvas, `Plotnum: ${this.name}`, canvas.width * 0.875, canvas.height * 0.38, 'center', 'system-ui', 18, 'lightgrey', true, 1000);
-      CanvasRenderer.drawLine(canvas, canvas.width * 0.8, canvas.height * 0.4, canvas.width * 0.95, canvas.height * 0.4, 'white', 0.8, 6);
+      CanvasRenderer.drawLine(canvas, canvas.width * 0.775, canvas.height * 0.4, canvas.width * 0.975, canvas.height * 0.4, 'white', 0.8, 1);
 
       // the actual 'stats' of the plant.
       // since there are 8 plants on a plot, stats from the first is taken
@@ -148,21 +150,50 @@ export default class Field {
       CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getNDVI() ?? 0).toFixed(3))}`, canvas.width * 0.95, canvas.height * 0.5, 'right', 'system-ui', 20, 'lightgrey', true, 1000);
       CanvasRenderer.writeText(canvas, 'Cover%:', canvas.width * 0.8, canvas.height * 0.55, 'left', 'system-ui', 20, 'lightgrey', true, 1000);
       CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getCoverage() ?? 0).toFixed(3))}%`, canvas.width * 0.95, canvas.height * 0.55, 'right', 'system-ui', 20, 'lightgrey', true, 1000);
-      CanvasRenderer.writeText(canvas, 'More info to come', canvas.width * 0.875, canvas.height * 0.6, 'center', 'system-ui', 18, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, 'Plant height:', canvas.width * 0.8, canvas.height * 0.6, 'left', 'system-ui', 20, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, `${((this.plots[0]?.plant?.observations[dateIndex]?.getHeight() ?? 0).toFixed(2))}`, canvas.width * 0.95, canvas.height * 0.6, 'right', 'system-ui', 20, 'lightgrey', true, 1000);
+      CanvasRenderer.writeText(canvas, 'More info to come', canvas.width * 0.875, canvas.height * 0.65, 'center', 'system-ui', 18, 'lightgrey', true, 1000);
     }
   }
 
   /**
    * Renders the field
    * @param canvas the canvas
-   */
-  public render(canvas: HTMLCanvasElement): void {
-    CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404');
+  */
+  public render(canvas: HTMLCanvasElement, dateIndex: number): void {
+    CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, 'rgba(128, 99, 56, 0.77)', 'rgba(109, 81, 40, 0.36)');
     this.plots.forEach((plot: Plot) => plot.render(canvas));
-    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY + 20, 'center');
+    CanvasRenderer.writeText(canvas, this.name, (this.width / 2) + this.posX, this.height + this.posY - 40, 'center', 'system-ui', 15, 'lightgrey');
+    CanvasRenderer.writeText(canvas, this.plots[0]?.plant?.observations[dateIndex]?.getVariety() ?? '', (this.width / 2) + this.posX, this.height + this.posY - 10, 'center', 'system-ui', 15, 'white');
     if (this.hover) {
-      CanvasRenderer.drawRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', '#240404', 0.3);
+      CanvasRenderer.fillRectangle(canvas, this.posX, this.posY, this.width, this.height, '#240404', 0.6, 0);
     }
+
+    // renders the shadow from the tubers based on plant height
+    const shadowAngle: number = Math.atan2(30, 20);
+    const plantHeight: number = this.plots[0]?.plant?.observations[dateIndex]?.getHeight() ?? 0;
+    const shadowLength: number = parseFloat(plantHeight.toFixed(2)) * 120;
+    const shadowOffsetX: number = Math.cos(shadowAngle) * shadowLength;
+    const shadowOffsetY: number = Math.sin(shadowAngle) * shadowLength;
+
+    const shadowPoints: {x: number, y: number }[] = [
+      { x: this.posX + this.width, y: this.posY },
+      { x: this.posX + this.width, y: this.posY + this.height },
+      { x: this.posX + this.width + Math.min(shadowOffsetX, 29), y: this.posY + this.height + Math.min(shadowOffsetY, 44) },
+      { x: this.posX + this.width + Math.min(shadowOffsetX, 29), y: this.posY + Math.min(shadowOffsetY, 44) }
+    ];
+
+    // if the length of the shadow is longer than the ridge,
+    // it follows the shape of the ground and starts moving horizontally
+    // since after the ridge, the ground is flat
+    if (shadowLength > 50) {
+      shadowPoints.splice(3, 0,
+        { x: this.posX + this.width + shadowOffsetX, y: this.posY + this.height + 44 },
+        { x: this.posX + this.width + shadowOffsetX, y: this.posY + 44 },
+      );
+    }
+
+    CanvasRenderer.fillPolygon(canvas, shadowPoints, 'rgba(0, 0, 0, 0.1)');
   }
 
   public getColumn(): number {
@@ -183,6 +214,10 @@ export default class Field {
 
   public getPosition(): number[] {
     return [this.posX, this.posY];
+  }
+
+  public getPlots(): Plot[] {
+    return this.plots;
   }
 
   public getDimensions(): number[] {

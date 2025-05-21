@@ -24,6 +24,8 @@ export default class BaseGame extends Game {
 
   private dateSlider: Slider;
 
+  private wasMouseDown: boolean = false;
+
   public constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
@@ -43,18 +45,18 @@ export default class BaseGame extends Game {
         this.fields = data;
         this.currentDate = this.fields[0]?.getDate() ?? '';
         this.dates = this.fields[0]?.getDates() ?? [];
-      
+
         // here, the 0.3 stands for 30% for the canvas.
         // as in, canvas.width * 0.3 is done in the class to render
         // this is done because the canvas dimensions can change, and if they are initialised
         // at posX = canvas.width * 0.3, it wont change if the canvas size changes
         this.dateSlider = new Slider(
-          0.2, 
-          0.025, 
-          0.37, 
-          0, 
-          this.dates.length - 1, 
-          0, 
+          0.2,
+          0.025,
+          0.37,
+          0,
+          this.dates.length - 1,
+          0,
           0
         );
 
@@ -69,10 +71,30 @@ export default class BaseGame extends Game {
    * Process all input. Called from the GameLoop.
    */
   public processInput(): void {
-    this.dateSlider.processInput(this.mouseListener);
+    // updates slider hitbox if infopanel is opened
+    let opened: boolean = false;
+    this.fields.forEach((field: Field) => {
+      if (field.openInfoPanel && field.getPlots()[0]?.plant.observations[0]) {
+        opened = true;
+      }
+    });
+    this.dateSlider.processInput(this.mouseListener, opened);
 
     let { xSpeed, ySpeed } = { xSpeed: 0, ySpeed: 0 };
-    const cameraSpeed: number = 15;
+    const cameraSpeed: number = 30;
+
+    const mouseDown: boolean = this.mouseListener.isButtonDown(0);
+    if (mouseDown && !opened && !this.dateSlider.holding) {
+      if (!this.wasMouseDown) {
+        this.mouseListener.resetMouseDelta();
+      }
+      const delta: { x: number, y: number } = this.mouseListener.getMouseDelta();
+      xSpeed += delta.x;
+      ySpeed += delta.y;
+    }
+    this.wasMouseDown = mouseDown;
+
+
     if (this.keyListener.isKeyDown('ArrowDown') || this.keyListener.isKeyDown('KeyS')) {
       ySpeed -= cameraSpeed;
     }
@@ -108,7 +130,7 @@ export default class BaseGame extends Game {
     if ((minPosX ?? 0) >= (fieldWidth ?? 0) / 2) {
       xSpeed -= cameraSpeed;
     }
-    if ((minPosY ?? 0) >= (fieldHeight ?? 0) * 1.5) {
+    if ((minPosY ?? 0) >= this.canvas.height * 0.2) {
       ySpeed -= cameraSpeed;
     }
 
@@ -120,7 +142,7 @@ export default class BaseGame extends Game {
     // turns off info panel for all fields except the one clicked
     // if anything else is clicked, it closes the info panel again
     this.fields.forEach((field: Field) => {
-      if (field.isHover(this.mouseListener)) {
+      if (field.isHover(this.mouseListener) && field.getPlots()[0]?.plant.observations[0]) {
         if (this.mouseListener.buttonPressed(0)) {
           if (field.openInfoPanel) {
             field.openInfoPanel = false;
@@ -162,16 +184,56 @@ export default class BaseGame extends Game {
    */
   public render(): void {
     CanvasRenderer.clearCanvas(this.canvas);
-    this.fields.forEach((field: Field) => field.render(this.canvas));
+    CanvasRenderer.fillRectangle(this.canvas, 0, 0, this.canvas.width, this.canvas.height, 'rgb(131, 103, 60)', 1, 0);
+
+    // renders the vertical lines for the fields
+    this.fields.forEach((field: Field) => {
+      if (field.getRow() == 0) {
+        // CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
+        CanvasRenderer.fillRectangle(this.canvas, 90 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 30, window.innerHeight, 'rgb(0, 0, 0)', 0.1, 0);
+        CanvasRenderer.fillRectangle(this.canvas, (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, field.getDimensions()[0] ?? 0, window.innerHeight, 'rgb(255, 178, 12)', 0.1, 0);
+        CanvasRenderer.fillRectangle(this.canvas, -20 + (field.getPosition()?.[0] ?? 0), window.innerHeight * 0.1, 20, window.innerHeight, 'rgb(255, 255, 255)', 0.1, 0);
+      }
+    });
+    this.fields.forEach((field: Field) => field.render(this.canvas, this.dateSlider.getActiveValue()));
     CanvasRenderer.drawRectangle(this.canvas, 0, 0, this.canvas.width, 60, 'white', 'white');
+
+    let opened: boolean = false;
     this.fields.forEach((field: Field) => {
       if (field.openInfoPanel) {
         field.renderInfoPanel(this.canvas, this.dateSlider.getActiveValue());
+        opened = true;
       }
     });
-    CanvasRenderer.writeText(this.canvas, `Current: ${this.currentDate}`, this.canvas.width * 0.4, 100, 'center', 'sans-serif', 30, 'black', true);
-    CanvasRenderer.writeText(this.canvas, this.dates[0] ?? '', this.canvas.width * 0.17, 55, 'right', 'system-ui', 20, 'black', true);
-    CanvasRenderer.writeText(this.canvas, this.dates[this.dates.length - 1] ?? '', this.canvas.width * 0.6, 55, 'left', 'system-ui', 20, 'black', true)
-    this.dateSlider.render(this.canvas);
+    CanvasRenderer.fillRectangle(this.canvas, 0, 0, this.canvas.width * 0.75 + (this.canvas.width * 0.25 * (opened ? 0 : 1)), 115, 'rgb(5, 153, 71)', 1, 0);
+    CanvasRenderer.fillRectangleWithGradient(
+      this.canvas,
+      0,
+      115,
+      this.canvas.width * 0.75 + (this.canvas.width * 0.25 * (opened ? 0 : 1)),
+      60,
+      [
+        { red: 5, green: 153, blue: 71, opacity: 1, stop: 0 },
+        { red: 131, green: 103, blue: 60, opacity: 0, stop: 1 }
+      ],
+      90, // vertical gradient: top (green) to bottom (brown)
+      0
+    );
+    const formatDate = (date: string): string =>
+      new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+      });
+
+    const formattedCurrentDate: string = formatDate(this.currentDate);
+    const formattedStartDate: string = formatDate(this.dates[0] ?? '');
+    const formattedEndDate: string = formatDate(this.dates[this.dates.length - 1] ?? '');
+
+    CanvasRenderer.writeText(this.canvas, formattedCurrentDate, this.canvas.width * 0.4 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 100, 'center', 'sans-serif', 30, 'white', true);
+    CanvasRenderer.writeText(this.canvas, formattedStartDate, this.canvas.width * 0.17 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'right', 'system-ui', 20, 'white', true);
+    CanvasRenderer.writeText(this.canvas, formattedEndDate, this.canvas.width * 0.6 + (this.canvas.width * 0.115 * (opened ? 0 : 1)), 55, 'left', 'system-ui', 20, 'white', true);
+    this.dateSlider.render(this.canvas, opened);
+    CanvasRenderer.fillCircle(this.canvas, this.canvas.width * 0, 0, 50, 'yellow');
   }
 }

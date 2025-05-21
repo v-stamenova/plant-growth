@@ -52,12 +52,12 @@ export default class Slider {
    *
    * @param mouseListener is what listenes to the mouse inputs
    */
-  public processInput(mouseListener: MouseListener): void {
+  public processInput(mouseListener: MouseListener, infoPanelOpened: boolean = false): void {
     if (mouseListener.checkCollision(
-      this.posX * window.innerWidth,
+      this.posX * window.innerWidth + (window.innerWidth * 0.115 * (infoPanelOpened ? 0 : 1)),
       this.posY * window.innerHeight,
       (this.width * window.innerWidth) + window.innerWidth * 0.05,
-      window.innerHeight * 0.03)) 
+      window.innerHeight * 0.03))
     {
       if (mouseListener.isButtonDown(0)) {
         this.holding = true;
@@ -69,7 +69,7 @@ export default class Slider {
     if (this.holding) {
       this.activeValue = Math.min(
         1,
-        Math.max(0, (mouseListener.getMousePosition().x - (this.posX * window.innerWidth)) / (this.width * window.innerWidth))
+        Math.max(0, (mouseListener.getMousePosition().x - (window.innerWidth * 0.115 * (infoPanelOpened ? 0 : 1)) - (this.posX * window.innerWidth)) / (this.width * window.innerWidth))
       );
       this.activeValue = Math.round(
         (10 ** this.numDecimals) * (
@@ -84,14 +84,37 @@ export default class Slider {
    *
    * @param canvas is the selected canvas to render to
    */
-  public render(canvas: HTMLCanvasElement): void {
-    const sliderWidth: number = canvas.width * 0.05;
-    CanvasRenderer.fillRectangle(canvas, (this.posX * canvas.width) - sliderWidth / 2, 30, (this.width * canvas.width) + sliderWidth, 30, 'grey');
-    CanvasRenderer.drawRectangle(canvas, (this.posX * canvas.width) - sliderWidth / 2, 30, (this.width * canvas.width) + sliderWidth, 30, 'black');
+  public render(canvas: HTMLCanvasElement, isInfoOpen: boolean = false): void {
+    const sliderWidth: number = canvas.width * 0.046;
 
-    CanvasRenderer.fillRectangle(canvas, (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2, 30, sliderWidth, 30, 'white');
-    CanvasRenderer.drawRectangle(canvas, (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2, 30, sliderWidth, 30, 'black');
-  
+    CanvasRenderer.fillRectangleWithGradient(
+      canvas,
+      ((this.posX * canvas.width) - sliderWidth / 2) + (canvas.width * 0.115 * (isInfoOpen ? 0 : 1)),
+      30,
+      (this.width * canvas.width) + sliderWidth,
+      30,
+      [
+        { red: 0, green: 122, blue: 255, opacity: 1, stop: 0 },
+        { red: 50, green: 102, blue: 204, opacity: 1, stop: 1 }
+      ],
+      0,
+      10
+    );
+
+    CanvasRenderer.fillRectangle(canvas, 10 + (this.posX * canvas.width) + ((this.activeValue - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) - sliderWidth / 2 + (canvas.width * 0.115 * (isInfoOpen ? 0 : 1)), 34, sliderWidth - 20, 22, 'black', 1, 10);
+
+    for (let i: number = 0; i < this.maxValue - this.minValue; i++) {
+      CanvasRenderer.drawLine(
+        canvas,
+        (this.posX * canvas.width) + ((i - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) + sliderWidth / 2 + (canvas.width * 0.115 * (isInfoOpen ? 0 : 1)),
+        this.posY + 30,
+        (this.posX * canvas.width) + ((i - this.minValue) / (this.maxValue - this.minValue) * (this.width * canvas.width)) + sliderWidth / 2 + (canvas.width * 0.115 * (isInfoOpen ? 0 : 1)),
+        this.posY + 60,
+        'darkgray',
+        1,
+        2
+      );
+    }
     CanvasRenderer.writeText(canvas, this.leftLabel, canvas.width * 0.18, canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
     CanvasRenderer.writeText(canvas, this.rightLabel, canvas.width * 0.55, canvas.height * 0.05, 'left', 'system-ui', 20, 'blue');
   }
